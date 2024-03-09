@@ -1,13 +1,17 @@
 package com.example.cgi_demo_app;
 
-public record Movie(
-    String name,
-    Genre genre,
-    int ageLimit,
-    Language language){
+import java.util.ArrayList;
+import java.util.Date;
 
-    public static Movie createMovie(String name, Genre genre, int ageLimit, Language language){
-        return new Movie(name, genre, ageLimit, language);
+public record Movie(
+        String name,
+        Genre genre,
+        int ageLimit,
+        Language language,
+        ArrayList<String> dates){
+
+    public static Movie createMovie(String name, Genre genre, int ageLimit, Language language, ArrayList<String> dates){
+        return new Movie(name, genre, ageLimit, language, dates);
     }
 
 }
