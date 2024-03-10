@@ -1,4 +1,3 @@
-
 interface Movie {
     name: string;
     ageLimit: number;

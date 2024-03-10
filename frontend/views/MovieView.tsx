@@ -3,11 +3,11 @@ import React, {useEffect, useState} from "react";
 import {HorizontalLayout} from "@hilla/react-components/HorizontalLayout";
 import {VerticalLayout} from "@hilla/react-components/VerticalLayout";
 import type Movie from "Frontend/generated/com/example/cgi_demo_app/Movie";
+import type User from "Frontend/generated/com/example/cgi_demo_app/User";
 import {Grid} from "@hilla/react-components/Grid";
 import {AppLayout} from "@hilla/react-components/AppLayout";
 import {GridSortColumn} from "@hilla/react-components/GridSortColumn";
 import {Tabs} from "@hilla/react-components/Tabs";
-import {Tab} from "@hilla/react-components/Tab";
 import {DrawerToggle} from "@hilla/react-components/DrawerToggle";
 import css from "../themes/my-theme/styles.module.css"
 import {TextField} from "@hilla/react-components/TextField";
@@ -15,6 +15,9 @@ import {Icon} from "@hilla/react-components/Icon";
 import {Button} from "@hilla/react-components/Button";
 import {ComboBox} from "@hilla/react-components/ComboBox";
 import {TimePicker} from "@hilla/react-components/TimePicker";
+import type { ComboBoxFilterChangedEvent } from '@hilla/react-components/ComboBox.js';
+import {Select} from "@hilla/react-components/Select";
+import {NumberField, NumberFieldEventMap, NumberFieldProps} from "@hilla/react-components/NumberField";
 
 
 
@@ -36,19 +39,25 @@ export default function MoviesView() {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
     const [movieGenres, setMovieGenres] = useState<string[]>();
+    const [movieLanguages, setMovieLanguages] = useState<string[]>();
+    const [users, setUsers] = useState<User[]>();
 
     useEffect(() => {
         getMovies();
     }, []);
 
     async function getMovies() {
-        const moviesList = await MoviesEndpoint.getMovies();
-        console.log(moviesList);
+        const serverResponse = await MoviesEndpoint.getMovies();
+        console.log(serverResponse);
         // @ts-ignore
-        setMovies(moviesList);
+        setMovies(serverResponse);
         // @ts-ignore
-        setFilteredMovies(moviesList)
+        setFilteredMovies(serverResponse);
+        setMovieGenres(await MoviesEndpoint.getGenres());
 
+        setMovieLanguages(await MoviesEndpoint.getLanguages());
+        setMovieLanguages(await MoviesEndpoint.getLanguages());
+        setUsers(await MoviesEndpoint.getUsers());
     }
 
 
@@ -88,8 +97,24 @@ export default function MoviesView() {
         }}>Recommend</Button>;
     }
 
+    const genreFilterChanged = (e: ComboBoxFilterChangedEvent) => {
+        const filter = e.detail.value;
+        setFilteredMovies(
+            movies.filter(({ genre }) =>
+                genre.toLowerCase().includes(filter.toLowerCase())
+            )
+        );
+    };
+
     function getGenreFilter() {
-        return <ComboBox label="Genre" item-label-path="name" item-value-path="id" items={movieGenres}/>;
+        return <ComboBox
+                    label="Genre"
+                    item-label-path="name"
+                    item-value-path="genre"
+                    items={movieGenres}
+                    onValueChanged={genreFilterChanged}
+                    clearButtonVisible
+                />;
     }
 
     function getUnifiedSearchAndFilter() {
@@ -118,20 +143,64 @@ export default function MoviesView() {
             <GridSortColumn>
                 {movieRenderer}
             </GridSortColumn>
+            <GridSortColumn hidden>
+
+            </GridSortColumn>
         </Grid>;
     }
 
+
+    const languageFilterChanged = (e: ComboBoxFilterChangedEvent) => {
+        const filter = e.detail.value;
+        setFilteredMovies(
+            movies.filter(({ language }) =>
+                language.toLowerCase().includes(filter.toLowerCase())
+            )
+        );
+    };
     function getLanguageFilter() {
-        return <ComboBox label="Language" item-label-path="name" item-value-path="id" items={movies}/>;
+        return <ComboBox
+            label="Language"
+            item-label-path="name"
+            item-value-path="language"
+            items={movieLanguages}
+            clearButtonVisible
+            onValueChanged={languageFilterChanged}
+        />;
     }
 
+    const ageFilterChanged = (e: NumberFieldProps) => {
+        const filter = e.value;
+        setFilteredMovies(
+            movies.filter(({ ageLimit }) =>
+                ageLimit > parseInt(filter)
+            )
+        );
+    };
 
     function getAgeFilter() {
-        return <ComboBox label="AgeFilter" item-label-path="name" item-value-path="id" items={movieGenres}/>;
+        return <NumberField
+                    label="Age limit"
+                    value="13"
+                    min={1}
+                    max={199}
+                    helperText="Enter age between 1-199"
+        >
+                    <div slot="suffix">a</div>
+                </NumberField>
     }
 
     function getStartTimeFilter() {
         return <TimePicker label="Sessions starting after" value="07:00" />;
+    }
+
+
+    function selectUser() {
+        return <ComboBox
+            label="Users"
+            item-label-path="name"
+            item-value-path="id"
+            items={users} />;
     }
 
     return (
@@ -140,6 +209,8 @@ export default function MoviesView() {
                 {/*Filter bar*/}
                 <DrawerToggle slot="navbar"/>
                 <Tabs slot="drawer" orientation="vertical">
+
+                    {selectUser()}
 
                     <h1>Filters</h1>
 
