@@ -31,14 +31,20 @@ public class MoviesEndpoint {
             }
         }
 
-        Movie movieForTesting = new Movie("Dune", Genre.ACTION, 13, Language.ENGLISH, dates);
-        Movie movieForTesting1 = new Movie("Dune2", Genre.ACTION, 14, Language.ENGLISH, dates);
-        Movie movieForTesting2 = new Movie("Dune3", Genre.ACTION, 13, Language.SPANISH, dates);
-        Movie movieForTesting3 = new Movie("Dune4", Genre.ACTION, 13, Language.ENGLISH, dates);
+        Movie movieForTesting = new Movie("Dune2", Genre.ACTION, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "Dune2.jpg");
+        Movie movieForTesting1 = new Movie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "AnyoneButYou.jpg");
+        Movie movieForTesting2 = new Movie("Barbie", Genre.FANTASY, 13, Language.SPANISH, dates, "VAADIN/MovieLogos/" + "Barbie.jpg");
+        Movie movieForTesting3 = new Movie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "BobMarley.jpg");
+        Movie movieForTesting4 = new Movie("Cat & Dog", Genre.ACTION, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "CatNDog.jpg");
+        Movie movieForTesting5 = new Movie("Ferrari", Genre.THRILLER, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "Ferrari.jpg");
+        Movie movieForTesting6 = new Movie("Kung Fu Panda 4", Genre.ACTION, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "KungFuPanda4.jpg");
         if(!movies.contains(movieForTesting)) movies.add(movieForTesting);
         if(!movies.contains(movieForTesting1)) movies.add(movieForTesting1);
         if(!movies.contains(movieForTesting2)) movies.add(movieForTesting2);
         if(!movies.contains(movieForTesting3)) movies.add(movieForTesting3);
+        if(!movies.contains(movieForTesting4)) movies.add(movieForTesting4);
+        if(!movies.contains(movieForTesting5)) movies.add(movieForTesting5);
+        if(!movies.contains(movieForTesting6)) movies.add(movieForTesting6);
         return movies;
     }
 

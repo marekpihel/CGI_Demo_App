@@ -5,5 +5,6 @@ interface Movie {
     genre: string;
     language: string;
     dates: any[];
+    imgLocation: string;
 }
 export default Movie;
