@@ -54,8 +54,6 @@ export default function MoviesView() {
         // @ts-ignore
         setFilteredMovies(serverResponse);
         setMovieGenres(await MoviesEndpoint.getGenres());
-
-        setMovieLanguages(await MoviesEndpoint.getLanguages());
         setMovieLanguages(await MoviesEndpoint.getLanguages());
         setUsers(await MoviesEndpoint.getUsers());
     }
