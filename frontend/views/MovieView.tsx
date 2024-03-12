@@ -2,7 +2,7 @@ import { MoviesEndpoint } from "Frontend/generated/endpoints.js";
 import React, {useEffect, useState} from "react";
 import {HorizontalLayout} from "@hilla/react-components/HorizontalLayout";
 import {VerticalLayout} from "@hilla/react-components/VerticalLayout";
-import type Movie from "Frontend/generated/com/example/cgi_demo_app/Movie";
+import  Movie from "Frontend/generated/com/example/cgi_demo_app/Movie";
 import type User from "Frontend/generated/com/example/cgi_demo_app/User";
 import {Grid} from "@hilla/react-components/Grid";
 import {AppLayout} from "@hilla/react-components/AppLayout";
@@ -51,22 +51,25 @@ export default function MoviesView() {
 
     useEffect(() => {
         getMoviesFromServer();
+
         getGenresFromServer();
         getLanguagesFromServer();
         getUsersFromServer();
     }, []);
 
     async function getGenresFromServer() {
+        // @ts-ignore
         setMovieGenres(await MoviesEndpoint.getGenres());
     }
 
     async function getLanguagesFromServer() {
+        // @ts-ignore
         setMovieLanguages(await MoviesEndpoint.getLanguages());
     }
 
     async function getUsersFromServer() {
         const usersListFromServer = await MoviesEndpoint.getUsers()
-        const allUsers = usersListFromServer?.map((user) => ({
+        const allUsers = usersListFromServer.map((user) => ({
             ...user,
             displayName: `${user?.firstName} ${user?.lastName}`,
         }));
@@ -75,8 +78,15 @@ export default function MoviesView() {
 
     async function getMoviesFromServer() {
         const serverResponse = await MoviesEndpoint.getMovies();
+        for (let i = 0; i < serverResponse.length; i++) {
+            //Dont make sessions dissappear
+            let datesArray = JSON.parse(serverResponse[i]?.dates).dates;
+            serverResponse[i].dates = datesArray;
+            console.log(serverResponse[i]?.dates);
+        }
         // @ts-ignore
         setMovies(serverResponse);
+
         // @ts-ignore
         setFilteredMovies(serverResponse);
     }
@@ -102,18 +112,6 @@ export default function MoviesView() {
         </HorizontalLayout>
     );
 
-    function dateRenderer ({dates}: { dates: any[] }){
-        return (
-            <>
-                {dates.map(date => (
-                    <Button>
-                        {date}
-                    </Button>
-                ))}
-            </>
-        );
-    }
-
     function getDatesForMovie(movie: Movie){
         return <Details
             summary="Dates"
@@ -127,7 +125,11 @@ export default function MoviesView() {
             }}
         >
             <HorizontalLayout>
-                {dateRenderer({dates: movie.dates})}
+                {movie.dates?.map(date => (
+                    <Button>
+                        {date}
+                    </Button>
+                ))}
             </HorizontalLayout>
         </Details>
     }
@@ -142,7 +144,7 @@ export default function MoviesView() {
     }
 
     function getRecommendedForUser(){
-        console.log(activeUser.firstName + activeUser.lastName + activeUser.movies)
+        console.log(activeUser?.firstName ?? "" + activeUser?.lastName ?? "" + activeUser?.movies ?? [])
     }
 
     function getRecommendedButton() {
@@ -262,11 +264,6 @@ export default function MoviesView() {
     const activeUserChanged = (e: ComboBoxFilterChangedEvent) => {
         var userCombobox= document.getElementById("activeUserCombobox");
         console.log(userCombobox);
-        const filteredUsersList = users?.filter((user) =>
-            user?.id?.toString().toLowerCase() == userId
-        );
-
-        activeUser = filteredUsersList[0];
     };
 
     function selectUser() {

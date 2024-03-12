@@ -1,12 +1,16 @@
 package com.example.cgi_demo_app.endpoints;
 
 import com.example.cgi_demo_app.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
+import dev.hilla.Nonnull;
 
-import java.io.Console;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,7 +25,8 @@ public class MoviesEndpoint {
     ArrayList<UUID> userUuids = new ArrayList<>();
 
 
-    public ArrayList<Movie> getMovies(){
+    @Nonnull
+    public ArrayList<Movie> getMovies() throws IOException {
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> languages = new ArrayList<>();
         ArrayList<String> genres = new ArrayList<>();
@@ -30,13 +35,11 @@ public class MoviesEndpoint {
 
         generateDatesForSessions(END_TIME, dates);
 
-        generateSessionsForDates(dates, START_TIME, END_TIME);
-
-        generateTestingMovies(dates);
+        generateTestingMovies(dates, START_TIME, END_TIME);
 
         for(Movie movie: movies){
-            addValuesToFilterLists(genres, String.valueOf(movie.genre()));
-            addValuesToFilterLists(languages, String.valueOf(movie.language()));
+            addValueToFilterList(genres, String.valueOf(movie.genre()));
+            addValueToFilterList(languages, String.valueOf(movie.language()));
         }
         moviesDictionary.put("movies", movies);
         moviesDictionary.put("languages", languages);
@@ -44,13 +47,37 @@ public class MoviesEndpoint {
         return movies;
     }
 
-    private static void addValuesToFilterLists(ArrayList<String> filterList, String value) {
+    private static void addValueToFilterList(ArrayList<String> filterList, String value) {
         if (!filterList.contains(value)) {
             filterList.add(value);
         }
     }
 
-    private void generateSessionsForDates(ArrayList<String> dates, String startTime, String endTime) {
+    private ArrayList<String> generateSessionsForDates(double startTime, double endTime, int sessionsPerDay) {
+        ArrayList<Double> sessionsAsDouble = new ArrayList<>();
+        ArrayList<String> sessions = new ArrayList<>();
+        Random random = new Random();
+
+        double totalHours = endTime-startTime;
+        double timeBetweenTwoSessionStarts = (double) Math.round((totalHours / sessionsPerDay) * 100) / 100;
+        double timeToNextSession = 0;
+
+
+        for (int i = 0; i < sessionsPerDay; i++) {
+            if(i == 0){
+                timeToNextSession = round(random.nextDouble() * 2 - 1, 2);
+            } else {
+                timeToNextSession += round(timeBetweenTwoSessionStarts + random.nextDouble() * 2 - 1, 2);
+            }
+
+
+            sessionsAsDouble.add(startTime + timeToNextSession);
+        }
+
+        Collections.sort(sessionsAsDouble);
+        System.out.println(sessionsAsDouble);
+
+        return new ArrayList();
     }
 
     private static void generateDatesForSessions(String END_TIME, ArrayList<String> dates) {
@@ -76,14 +103,22 @@ public class MoviesEndpoint {
         }
     }
 
-    private void generateTestingMovies(ArrayList<String> dates) {
-        Movie movieForTesting = new Movie("Dune2", Genre.ACTION, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "Dune2.jpg");
-        Movie movieForTesting1 = new Movie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "AnyoneButYou.jpg");
-        Movie movieForTesting2 = new Movie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "VAADIN/MovieLogos/" + "Barbie.jpg");
-        Movie movieForTesting3 = new Movie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "BobMarley.jpg");
-        Movie movieForTesting4 = new Movie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "CatNDog.jpg");
-        Movie movieForTesting5 = new Movie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "Ferrari.jpg");
-        Movie movieForTesting6 = new Movie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "VAADIN/MovieLogos/" + "KungFuPanda4.jpg");
+    private void generateTestingMovies(ArrayList<String> dates, String START_TIME, String END_TIME) throws IOException {
+        HashMap<String, ArrayList> datesAndSessions = new HashMap<>();
+        datesAndSessions.put("dates", dates);
+
+        ArrayList<String> sessions = generateSessionsForDates(Double.valueOf(START_TIME), Double.valueOf(END_TIME), 8);
+        datesAndSessions.put("sessions", sessions);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jacksonData = objectMapper.writeValueAsString(datesAndSessions);
+
+        Movie movieForTesting = new Movie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg");
+        Movie movieForTesting1 = new Movie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg");
+        Movie movieForTesting2 = new Movie("Barbie", Genre.FANTASY, 18, Language.SPANISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg");
+        Movie movieForTesting3 = new Movie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg");
+        Movie movieForTesting4 = new Movie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg");
+        Movie movieForTesting5 = new Movie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg");
+        Movie movieForTesting6 = new Movie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg");
         if(!movies.contains(movieForTesting)) movies.add(movieForTesting);
         if(!movies.contains(movieForTesting1)) movies.add(movieForTesting1);
         if(!movies.contains(movieForTesting2)) movies.add(movieForTesting2);
@@ -93,24 +128,12 @@ public class MoviesEndpoint {
         if(!movies.contains(movieForTesting6)) movies.add(movieForTesting6);
     }
 
-    private ArrayList getRandomTimesBetween(String startTime, String endTime, boolean isToday) {
-        ArrayList<String> sessions;
-
-        String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-
-        if(isToday){
-            startTime = "12.00";
-        }
-
-        return new ArrayList();
+    public Language[] getLanguages(){
+        return Language.values();
     }
 
-    public ArrayList<String> getLanguages(){
-        return moviesDictionary.get("languages");
-    }
-
-    public ArrayList<String> getGenres(){
-        return moviesDictionary.get("genres");
+    public Genre[] getGenres(){
+        return Genre.values();
     }
 
 
@@ -122,13 +145,12 @@ public class MoviesEndpoint {
         return formattedDay + "." + monthToAdd + "." + calendar.get(Calendar.YEAR);
     }
 
+    @Nonnull
     public ArrayList<User> getUsers() throws IOException {
         int generateThisAmountOfUsers = 10;
         NameGenerator nameGenerator = new NameGenerator();
 
         populateUsersIfThereIsNone(generateThisAmountOfUsers, nameGenerator);
-
-        System.out.println(users.toString());
 
         return users;
     }
@@ -170,6 +192,17 @@ public class MoviesEndpoint {
                 user.movies().add(movie);
             }
         }
+    }
+
+
+    //Kood võetud https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places
+    // üks ühele kopeeritud funktsionaalsuse jaoks ainult
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 }

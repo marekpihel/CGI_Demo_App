@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'dev.hilla' version '2.5.5'
@@ -33,6 +34,9 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
 }
 
 dependencyManagement {
@@ -41,10 +45,18 @@ dependencyManagement {
     }
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
 }
 
 hilla {
-    productionMode = false
+    productionMode = true
 }
+
+application {
+    apply plugin: 'application'
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en']
+    mainClass =  'com.example.cgi_demo_app.CgiDemoAppApplication'
+}
+
