@@ -6,11 +6,12 @@ import java.util.UUID;
 public record User(
         UUID id,
         String firstName,
-        String lastName
+        String lastName,
+        ArrayList<Movie> movies
         ){
 
-    public static User createUser(String firstName, String lastName, UUID id){
-        return new User(id, firstName, lastName);
+    public static User createUser(String firstName, String lastName, UUID id, ArrayList<Movie> movies){
+        return new User(id, firstName, lastName, movies);
     }
 
 }

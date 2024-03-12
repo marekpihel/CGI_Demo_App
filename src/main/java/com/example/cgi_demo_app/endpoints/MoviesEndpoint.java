@@ -1,13 +1,12 @@
 package com.example.cgi_demo_app.endpoints;
 
-import com.example.cgi_demo_app.Genre;
-import com.example.cgi_demo_app.Language;
-import com.example.cgi_demo_app.Movie;
-import com.example.cgi_demo_app.User;
+import com.example.cgi_demo_app.*;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
-import org.checkerframework.checker.units.qual.A;
 
+import java.io.Console;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -17,6 +16,9 @@ import java.util.*;
 public class MoviesEndpoint {
     ArrayList<Movie> movies = new ArrayList<>();
     HashMap<String, ArrayList> moviesDictionary = new HashMap<>();
+    ArrayList<User> users = new ArrayList<>();
+
+    ArrayList<UUID> userUuids = new ArrayList<>();
 
 
     public ArrayList<Movie> getMovies(){
@@ -120,13 +122,54 @@ public class MoviesEndpoint {
         return formattedDay + "." + monthToAdd + "." + calendar.get(Calendar.YEAR);
     }
 
-    public void addMovie(String name){
-        //Todo possibly?
+    public ArrayList<User> getUsers() throws IOException {
+        int generateThisAmountOfUsers = 10;
+        NameGenerator nameGenerator = new NameGenerator();
 
+        populateUsersIfThereIsNone(generateThisAmountOfUsers, nameGenerator);
+
+        System.out.println(users.toString());
+
+        return users;
     }
 
-    public ArrayList<User> getUsers(){
+    private void populateUsersIfThereIsNone(int generateThisAmountOfUsers, NameGenerator nameGenerator) throws IOException {
+        UUID uuid;
+        if(users.isEmpty()) {
+            for (int i = 0; i < generateThisAmountOfUsers; i++) {
+                uuid = UUID.randomUUID();
+                while (userUuids.contains(uuid)) {
+                    uuid = UUID.randomUUID();
+                    System.out.println("Getting UUID");
+                }
+                userUuids.add(uuid);
+
+                String fullName = nameGenerator.generateName("src/main/java/com/example/cgi_demo_app/Names.txt");
+
+                User user = new User(uuid,
+                        fullName.split(" ")[0],
+                        fullName.split(" ")[1],
+                        new ArrayList<Movie>());
+
+                users.add(user);
+            }
+        }
+    }
+
+    public ArrayList<Movie> getUserRecommendations(UUID uuid){
+        System.out.println("getting recommendations for user: " + uuid);
+        for(User user: users){
+            if(user.id() == uuid) return user.movies();
+        }
         return new ArrayList<>();
+    };
+
+    public void addMovieToUser(UUID userUuid, Movie movie) throws IOException {
+        for(User user: getUsers()){
+            if(user.id() == userUuid){
+                user.movies().add(movie);
+            }
+        }
     }
 
 }
