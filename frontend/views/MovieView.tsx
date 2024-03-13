@@ -14,7 +14,7 @@ import {TextField} from "@hilla/react-components/TextField";
 import {Icon} from "@hilla/react-components/Icon";
 import {Button} from "@hilla/react-components/Button";
 import {ComboBox} from "@hilla/react-components/ComboBox";
-import {TimePicker} from "@hilla/react-components/TimePicker";
+import {TimePicker, TimePickerChangeEvent} from "@hilla/react-components/TimePicker";
 import type { ComboBoxFilterChangedEvent } from '@hilla/react-components/ComboBox.js';
 import {NumberField, NumberFieldChangeEvent} from "@hilla/react-components/NumberField";
 import {Details} from "@hilla/react-components/Details";
@@ -35,6 +35,29 @@ const movieLogoStyle = {
 
 };
 
+const movieDateRowStyle = {
+    margin: "5px",
+    outlineWidth: "2px",
+    outlineStyle: "solid",
+    borderRadius: "5em",
+    outlineColor: "darkGray"
+};
+
+const movieDateDiplayStyle = {
+    marginRight: "20px",
+    color: "black",
+    backgroundColor: "transparent"
+};
+
+const sessionButtonDisplayStyle = {
+    marginRight: "20px",
+    outlineColor: "gray",
+    outlineStyle: "solid",
+    outlineWidth: "2px",
+    borerRadius: "2em",
+    backgroundColor: "lightGray"
+};
+
 
 
 export default function MoviesView() {
@@ -45,13 +68,18 @@ export default function MoviesView() {
     const [users, setUsers] = useState<User[]>();
     const [filterAgeLimit, setFilterAgeLimit] = useState<string>("");
     const [expandedMovie, setExpandedMovie] = useState<Movie[]>([]);
+    const [selectedDates, setSelectedDates] = useState<string[]>([])
+    const [selectedSession, setSelectedSession] = useState<string>("")
+    const [selectedDate, setSelectedDate] = useState<string>("")
+    const [selectedMovieName, setSelectedMovieName] = useState<string>("")
+    const [timeFilter, setTimeFilter] = useState<string>("")
+    const [filteredSessions, setFilteredSessions] = useState<string[]>([]);
 
     var activeUser: User;
 
 
     useEffect(() => {
         getMoviesFromServer();
-
         getGenresFromServer();
         getLanguagesFromServer();
         getUsersFromServer();
@@ -78,12 +106,6 @@ export default function MoviesView() {
 
     async function getMoviesFromServer() {
         const serverResponse = await MoviesEndpoint.getMovies();
-        for (let i = 0; i < serverResponse.length; i++) {
-            //Dont make sessions dissappear
-            let datesArray = JSON.parse(serverResponse[i]?.dates).dates;
-            serverResponse[i].dates = datesArray;
-            console.log(serverResponse[i]?.dates);
-        }
         // @ts-ignore
         setMovies(serverResponse);
 
@@ -91,8 +113,15 @@ export default function MoviesView() {
         setFilteredMovies(serverResponse);
     }
 
+    function getGridOfMovies() {
 
-    //Possibly use Avatar for movie picture;
+        return <Grid items={filteredMovies} style={{height: "100%"}}>
+            <GridSortColumn>
+                {movieRenderer}
+            </GridSortColumn>
+        </Grid>;
+    }
+
     const movieRenderer = ({ item: movie }: { item: Movie }) => (
         <HorizontalLayout theme="spacing margin">
                 <img src={movie.imgLocation} style={movieLogoStyle}/>
@@ -112,6 +141,25 @@ export default function MoviesView() {
         </HorizontalLayout>
     );
 
+    const SessionDetail = ({ date, session, movieName} : {date:string, session:string, movieName:string}) => {
+        const openDialogueForTickets = () => {
+            setSelectedDate(date);
+            setSelectedSession(session);
+            setSelectedMovieName(movieName)
+        };
+
+        return (
+            <div style={{width: "100%"}}>
+                <Button id={movieName+date+session} theme="secondary contrast" style={sessionButtonDisplayStyle} onClick={openDialogueForTickets}>{session}</Button>
+            </div>
+
+        );
+    };
+
+    const filterSessionUsingTimeFilter = (session) => {
+        return session > timeFilter;
+    };
+
     function getDatesForMovie(movie: Movie){
         return <Details
             summary="Dates"
@@ -124,23 +172,18 @@ export default function MoviesView() {
                 }
             }}
         >
-            <HorizontalLayout>
+            <VerticalLayout style={{marginRight: "20px"}}>
                 {movie.dates?.map(date => (
-                    <Button>
-                        {date}
-                    </Button>
+                    <HorizontalLayout style={movieDateRowStyle}>
+                        <Button disabled theme="primary contrast" style={movieDateDiplayStyle}>{date}</Button>
+                        {movie.sessions?.filter(filterSessionUsingTimeFilter).map(session =>
+                            <SessionDetail session={session} date={date} movieName={movie.name}/>
+                        )}
+                    </HorizontalLayout>
                 ))}
-            </HorizontalLayout>
+                <div>Selected movie: {selectedMovieName} date: {selectedDate} session {selectedSession}</div>
+            </VerticalLayout>
         </Details>
-    }
-
-    function getGridOfMovies() {
-
-        return <Grid items={filteredMovies} style={{height: "100%"}}>
-            <GridSortColumn>
-                {movieRenderer}
-            </GridSortColumn>
-        </Grid>;
     }
 
     function getRecommendedForUser(){
@@ -197,7 +240,7 @@ export default function MoviesView() {
                             genre?.toLowerCase().includes(searchTerm) ||
                             name?.toLowerCase().includes(searchTerm) ||
                             language?.toLowerCase().includes(searchTerm) ||
-                            ageLimit >= parseInt(searchTerm)
+                            ageLimit <= parseInt(searchTerm)
                     )
                 );
             }}
@@ -205,9 +248,6 @@ export default function MoviesView() {
             <Icon slot="prefix" icon="vaadin:search"></Icon>
         </TextField>;
     }
-
-
-
 
     const languageFilterChanged = (e: ComboBoxFilterChangedEvent) => {
         const filter = e.detail.value;
@@ -237,7 +277,7 @@ export default function MoviesView() {
             setFilterAgeLimit(ageValue);
             setFilteredMovies(
                 movies.filter(({ ageLimit }) =>
-                    ageLimit >= parseInt(ageValue)
+                    ageLimit <= parseInt(ageValue)
                 )
             );
         }
@@ -257,13 +297,17 @@ export default function MoviesView() {
                 </NumberField>
     }
 
+    const timeFilterChanged  = (e: TimePickerChangeEvent) => {
+        const timeValue = e.target.value;
+        setTimeFilter(timeValue);
+    };
+
     function getStartTimeFilter() {
-        return <TimePicker label="Sessions starting after" value="07:00" />;
+        return <TimePicker label="Sessions starting after" value={timeFilter} onChange={timeFilterChanged}/>;
     }
 
     const activeUserChanged = (e: ComboBoxFilterChangedEvent) => {
         var userCombobox= document.getElementById("activeUserCombobox");
-        console.log(userCombobox);
     };
 
     function selectUser() {

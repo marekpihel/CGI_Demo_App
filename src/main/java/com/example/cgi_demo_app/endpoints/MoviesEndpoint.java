@@ -19,10 +19,15 @@ import java.util.*;
 @AnonymousAllowed
 public class MoviesEndpoint {
     ArrayList<Movie> movies = new ArrayList<>();
+
+    ArrayList<String> movieNames = new ArrayList<>();
     HashMap<String, ArrayList> moviesDictionary = new HashMap<>();
     ArrayList<User> users = new ArrayList<>();
 
     ArrayList<UUID> userUuids = new ArrayList<>();
+
+    String START_TIME = "08.00";
+    String END_TIME = "21.00";
 
 
     @Nonnull
@@ -30,8 +35,6 @@ public class MoviesEndpoint {
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> languages = new ArrayList<>();
         ArrayList<String> genres = new ArrayList<>();
-        String START_TIME = "08.00";
-        String END_TIME = "21.00";
 
         generateDatesForSessions(END_TIME, dates);
 
@@ -65,19 +68,40 @@ public class MoviesEndpoint {
 
         for (int i = 0; i < sessionsPerDay; i++) {
             if(i == 0){
-                timeToNextSession = round(random.nextDouble() * 2 - 1, 2);
+                timeToNextSession = round(random.nextDouble(), 2);
             } else {
                 timeToNextSession += round(timeBetweenTwoSessionStarts + random.nextDouble() * 2 - 1, 2);
             }
 
-
-            sessionsAsDouble.add(startTime + timeToNextSession);
+            if(startTime + timeToNextSession > endTime){
+                sessionsAsDouble.add(endTime);
+            } else {
+                sessionsAsDouble.add(startTime + timeToNextSession);
+            }
         }
 
-        Collections.sort(sessionsAsDouble);
-        System.out.println(sessionsAsDouble);
 
-        return new ArrayList();
+        for(double session: sessionsAsDouble){
+            //To explain the code a bit we generate string value of the float in regular 60th system according to our time keeping
+            //First if statement adds zero in front if first value is not 2 digit one
+            //Second if statement adds zero to the beginning of minutes if some edge cases happen
+            String sessionStringToAdd = "";
+            if(session < 10){
+                sessionStringToAdd += "0";
+            }
+            int minutes = (int)((session - (int) session) * 60);
+            sessionStringToAdd += (int) session + ".";
+
+            if(minutes < 10){
+                sessionStringToAdd += "0" + minutes;
+            } else {
+                sessionStringToAdd += minutes;
+            }
+            sessions.add(sessionStringToAdd);
+
+        }
+
+        return sessions;
     }
 
     private static void generateDatesForSessions(String END_TIME, ArrayList<String> dates) {
@@ -104,34 +128,43 @@ public class MoviesEndpoint {
     }
 
     private void generateTestingMovies(ArrayList<String> dates, String START_TIME, String END_TIME) throws IOException {
-        HashMap<String, ArrayList> datesAndSessions = new HashMap<>();
-        datesAndSessions.put("dates", dates);
-
         ArrayList<String> sessions = generateSessionsForDates(Double.valueOf(START_TIME), Double.valueOf(END_TIME), 8);
-        datesAndSessions.put("sessions", sessions);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jacksonData = objectMapper.writeValueAsString(datesAndSessions);
 
-        Movie movieForTesting = new Movie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg");
-        Movie movieForTesting1 = new Movie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg");
-        Movie movieForTesting2 = new Movie("Barbie", Genre.FANTASY, 18, Language.SPANISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg");
-        Movie movieForTesting3 = new Movie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg");
-        Movie movieForTesting4 = new Movie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg");
-        Movie movieForTesting5 = new Movie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg");
-        Movie movieForTesting6 = new Movie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, jacksonData, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg");
-        if(!movies.contains(movieForTesting)) movies.add(movieForTesting);
-        if(!movies.contains(movieForTesting1)) movies.add(movieForTesting1);
-        if(!movies.contains(movieForTesting2)) movies.add(movieForTesting2);
-        if(!movies.contains(movieForTesting3)) movies.add(movieForTesting3);
-        if(!movies.contains(movieForTesting4)) movies.add(movieForTesting4);
-        if(!movies.contains(movieForTesting5)) movies.add(movieForTesting5);
-        if(!movies.contains(movieForTesting6)) movies.add(movieForTesting6);
+
+        Movie movieForTesting = generateMovie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg", 7);
+        Movie movieForTesting1 = generateMovie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg", 5);
+        Movie movieForTesting2 = generateMovie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg", 3);
+        Movie movieForTesting3 = generateMovie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg", 4);
+        Movie movieForTesting4 = generateMovie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg", 8);
+        Movie movieForTesting5 = generateMovie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg", 6);
+        Movie movieForTesting6 = generateMovie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg", 10);
+
+        addNonDuplicateMoviesToMoviesList(movieForTesting);
+        addNonDuplicateMoviesToMoviesList(movieForTesting1);
+        addNonDuplicateMoviesToMoviesList(movieForTesting2);
+        addNonDuplicateMoviesToMoviesList(movieForTesting3);
+        addNonDuplicateMoviesToMoviesList(movieForTesting4);
+        addNonDuplicateMoviesToMoviesList(movieForTesting5);
+        addNonDuplicateMoviesToMoviesList(movieForTesting6);
     }
 
+    public void addNonDuplicateMoviesToMoviesList(Movie movieForTesting) {
+        if(!movieNames.contains(movieForTesting.name())) {
+            movies.add(movieForTesting);
+            movieNames.add(movieForTesting.name());
+        }
+    }
+
+    private Movie generateMovie(String name, Genre genre, int ageLimit,Language language, ArrayList dates, String imgLocation, int sessionsPerDay){
+        return new Movie(name, genre, ageLimit,language, dates, generateSessionsForDates(Double.valueOf(START_TIME), Double.valueOf(END_TIME),sessionsPerDay),imgLocation);
+    }
+
+    @Nonnull
     public Language[] getLanguages(){
         return Language.values();
     }
 
+    @Nonnull
     public Genre[] getGenres(){
         return Genre.values();
     }
@@ -162,7 +195,6 @@ public class MoviesEndpoint {
                 uuid = UUID.randomUUID();
                 while (userUuids.contains(uuid)) {
                     uuid = UUID.randomUUID();
-                    System.out.println("Getting UUID");
                 }
                 userUuids.add(uuid);
 
@@ -179,7 +211,6 @@ public class MoviesEndpoint {
     }
 
     public ArrayList<Movie> getUserRecommendations(UUID uuid){
-        System.out.println("getting recommendations for user: " + uuid);
         for(User user: users){
             if(user.id() == uuid) return user.movies();
         }
