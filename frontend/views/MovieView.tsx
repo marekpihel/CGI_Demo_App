@@ -187,6 +187,7 @@ export default function MoviesView() {
         </Details>
     }
 
+    //This function has been copied from https://www.geeksforgeeks.org/javascript-program-to-find-the-most-frequent-element-in-an-array/
     function getMostOccuredElement(arrayToCheck: any[]) {
         let count = 1,
             max = 0,
