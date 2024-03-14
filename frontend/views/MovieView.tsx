@@ -18,8 +18,9 @@ import {TimePicker, TimePickerChangeEvent} from "@hilla/react-components/TimePic
 import type { ComboBoxFilterChangedEvent } from '@hilla/react-components/ComboBox.js';
 import {NumberField, NumberFieldChangeEvent} from "@hilla/react-components/NumberField";
 import {Details} from "@hilla/react-components/Details";
-
-
+import {Dialog} from "@hilla/react-components/Dialog";
+import {IntegerField} from "@hilla/react-components/IntegerField";
+import {Notification} from "@hilla/react-components/Notification";
 
 
 const h1Style = {
@@ -68,14 +69,13 @@ export default function MoviesView() {
     const [users, setUsers] = useState<User[]>();
     const [filterAgeLimit, setFilterAgeLimit] = useState<string>("");
     const [expandedMovie, setExpandedMovie] = useState<Movie[]>([]);
-    const [selectedDates, setSelectedDates] = useState<string[]>([])
-    const [selectedSession, setSelectedSession] = useState<string>("")
-    const [selectedDate, setSelectedDate] = useState<string>("")
-    const [selectedMovieName, setSelectedMovieName] = useState<string>("")
-    const [timeFilter, setTimeFilter] = useState<string>("")
-    const [filteredSessions, setFilteredSessions] = useState<string[]>([]);
-
-    var activeUser: User;
+    const [selectedSession, setSelectedSession] = useState<string>("");
+    const [selectedDate, setSelectedDate] = useState<string>("");
+    const [selectedMovieName, setSelectedMovieName] = useState<string>("");
+    const [timeFilter, setTimeFilter] = useState<string>("");
+    const [ticketAmount, setTicketAmount] = useState<string>("");
+    const [ticketDialogOpened, setTicketDialogOpened] = useState(false);
+    const [activeUserId, setActiveUserId] = useState("");
 
 
     useEffect(() => {
@@ -146,6 +146,7 @@ export default function MoviesView() {
             setSelectedDate(date);
             setSelectedSession(session);
             setSelectedMovieName(movieName)
+            setTicketDialogOpened(true);
         };
 
         return (
@@ -186,23 +187,63 @@ export default function MoviesView() {
         </Details>
     }
 
+    function getMostOccuredElement(arrayToCheck: any[]) {
+        let count = 1,
+            max = 0,
+            el;
+        for (let i = 1; i < arrayToCheck.length; ++i) {
+            if (arrayToCheck[i] === arrayToCheck[i - 1]) {
+                count++;
+            } else {
+                count = 1;
+            }
+            if (count > max) {
+                max = count;
+                el = arrayToCheck[i];
+            }
+        }
+        return el;
+    }
+
     function getRecommendedForUser(){
-        console.log(activeUser?.firstName ?? "" + activeUser?.lastName ?? "" + activeUser?.movies ?? [])
+        var activeUser = users?.filter((user) => activeUserId === user.id) ? users?.filter((user) => activeUserId === user.id): [];
+        var activeUserMovies = activeUser[0].movies ? activeUser[0].movies : [];
+        var activeUserGenres = [];
+        var activeUserLanguages = [];
+        var activeUserMovieAgeLimits = [];
+        var totalAgeLimitAge = 0;
+        var activeUserAvgAgeLimit = 0;
+
+        if(activeUserMovies.length > 0){
+           activeUserMovies.forEach((movie) => {
+               activeUserGenres.push(movie?.genre);
+               activeUserLanguages.push(movie?.language);
+               activeUserMovieAgeLimits.push(movie?.ageLimit);
+           });
+
+           //Code taken from https://www.geeksforgeeks.org/javascript-program-to-find-the-most-frequent-element-in-an-array/
+           activeUserGenres.sort((a, b) => a-b);
+           activeUserLanguages.sort((a, b) => a-b);
+           activeUserMovieAgeLimits.sort((a, b) => a-b);
+
+            var activeUserFavouriteGenre = getMostOccuredElement(activeUserGenres);
+            var activeUserFavouriteLanguage = getMostOccuredElement(activeUserLanguages);
+            activeUserMovieAgeLimits.forEach((age) => totalAgeLimitAge += age);
+            activeUserAvgAgeLimit = Math.floor(totalAgeLimitAge/activeUserMovieAgeLimits.length);
+
+
+
+        } else {
+            Notification.show('No watch history', {
+                theme: 'warning',
+            });
+        }
     }
 
     function getRecommendedButton() {
-
-
         return <Button onClick={() => {
             getRecommendedForUser();
-            const searchTerm = ("Action").trim().toLowerCase();
-            setFilteredMovies(
-                movies.filter(
-                    ({genre}) =>
-                        !searchTerm ||
-                        genre?.toLowerCase().includes(searchTerm)
-                )
-            );
+
         }}>
             Recommend</Button>;
     }
@@ -307,14 +348,15 @@ export default function MoviesView() {
     }
 
     const activeUserChanged = (e: ComboBoxFilterChangedEvent) => {
-        var userCombobox= document.getElementById("activeUserCombobox");
+        var userId= e.detail.value;
+        setActiveUserId(userId);
     };
 
     function selectUser() {
         return <ComboBox
-                    id={"activeUserCombobox"}
                     label="Users"
                     itemLabelPath="displayName"
+                    item-value-path="id"
                     style={{textOverflow: "initial"}}
                     filteredItems={users}
                     onValueChanged={activeUserChanged}
@@ -330,6 +372,55 @@ export default function MoviesView() {
                         </div>
                     )}
                 />;
+    }
+
+    const handleTicketPurchase = () => {
+        console.log("Purchased "  + ticketAmount + " tickets for " + selectedMovieName);
+        setTicketDialogOpened(false);
+        setSelectedMovieName("");
+        setSelectedDate("");
+        setSelectedSession("");
+        setTicketAmount("1");
+    };
+
+    const handleTicketAmountChanged  = (e: NumberFieldChangeEvent) => {
+        const purchasableTicketAmount = e.target.value;
+        setTicketAmount(purchasableTicketAmount);
+    };
+
+    function getTicketPurchaseDialog (){
+        return (<>
+            <Dialog
+                headerTitle="Purchase window"
+                opened={ticketDialogOpened}
+                onOpenedChanged={({ detail }) => {
+                    setTicketDialogOpened(detail.value);
+                }}
+                footerRenderer={() => (
+                    <>
+                        <Button onClick={() => setTicketDialogOpened(false)}>Cancel</Button>
+                        <Button theme="primary" onClick={handleTicketPurchase}>
+                            Purchase
+                        </Button>
+                    </>
+                )}
+            >
+                <VerticalLayout style={{ alignItems: 'stretch', width: '18rem', maxWidth: '100%' }}>
+                    <div>Movie name: {selectedMovieName}</div>
+                    <div>Date: {selectedDate}</div>
+                    <div>Session: {selectedSession}</div>
+                    <IntegerField
+                        label="Tickets"
+                        helperText="Max 10 tickets"
+                        min={1}
+                        max={10}
+                        value={ticketAmount}
+                        stepButtonsVisible
+                        onChange={handleTicketAmountChanged}
+                    />
+                </VerticalLayout>
+            </Dialog>
+        </>)
     }
 
     return (
@@ -364,6 +455,8 @@ export default function MoviesView() {
                 </h1>
 
                 {getGridOfMovies()}
+
+                {getTicketPurchaseDialog()}
 
             </AppLayout>
         </>

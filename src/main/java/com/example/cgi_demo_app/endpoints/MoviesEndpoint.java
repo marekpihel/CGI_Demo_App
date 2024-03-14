@@ -129,23 +129,21 @@ public class MoviesEndpoint {
 
     private void generateTestingMovies(ArrayList<String> dates, String START_TIME, String END_TIME) throws IOException {
         ArrayList<String> sessions = generateSessionsForDates(Double.valueOf(START_TIME), Double.valueOf(END_TIME), 8);
+        ArrayList<Movie> generatedMoviesList = new ArrayList<>();
 
 
-        Movie movieForTesting = generateMovie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg", 7);
-        Movie movieForTesting1 = generateMovie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg", 5);
-        Movie movieForTesting2 = generateMovie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg", 3);
-        Movie movieForTesting3 = generateMovie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg", 4);
-        Movie movieForTesting4 = generateMovie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg", 8);
-        Movie movieForTesting5 = generateMovie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg", 6);
-        Movie movieForTesting6 = generateMovie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg", 10);
+        generatedMoviesList.add(generateMovie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg", 7));
+        generatedMoviesList.add(generateMovie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg", 5));
+        generatedMoviesList.add(generateMovie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg", 3));
+        generatedMoviesList.add(generateMovie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg", 4));
+        generatedMoviesList.add(generateMovie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg", 8));
+        generatedMoviesList.add(generateMovie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg", 6));
+        generatedMoviesList.add(generateMovie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg", 10));
 
-        addNonDuplicateMoviesToMoviesList(movieForTesting);
-        addNonDuplicateMoviesToMoviesList(movieForTesting1);
-        addNonDuplicateMoviesToMoviesList(movieForTesting2);
-        addNonDuplicateMoviesToMoviesList(movieForTesting3);
-        addNonDuplicateMoviesToMoviesList(movieForTesting4);
-        addNonDuplicateMoviesToMoviesList(movieForTesting5);
-        addNonDuplicateMoviesToMoviesList(movieForTesting6);
+
+        for(Movie movie: generatedMoviesList){
+            addNonDuplicateMoviesToMoviesList(movie);
+        }
     }
 
     public void addNonDuplicateMoviesToMoviesList(Movie movieForTesting) {
@@ -190,38 +188,56 @@ public class MoviesEndpoint {
 
     private void populateUsersIfThereIsNone(int generateThisAmountOfUsers, NameGenerator nameGenerator) throws IOException {
         UUID uuid;
+        int generateAmountOfMovies = 10;
+
+
         if(users.isEmpty()) {
             for (int i = 0; i < generateThisAmountOfUsers; i++) {
                 uuid = UUID.randomUUID();
+                ArrayList<Movie> userMovies = new ArrayList<>();
+
                 while (userUuids.contains(uuid)) {
                     uuid = UUID.randomUUID();
                 }
+
                 userUuids.add(uuid);
 
                 String fullName = nameGenerator.generateName("src/main/java/com/example/cgi_demo_app/Names.txt");
 
+                generatRandomMoviesForUser(generateAmountOfMovies, userMovies);
+
                 User user = new User(uuid,
                         fullName.split(" ")[0],
                         fullName.split(" ")[1],
-                        new ArrayList<Movie>());
+                        userMovies);
 
                 users.add(user);
             }
         }
     }
 
-    public ArrayList<Movie> getUserRecommendations(UUID uuid){
-        for(User user: users){
-            if(user.id() == uuid) return user.movies();
-        }
-        return new ArrayList<>();
-    };
+    private void generatRandomMoviesForUser(int generateAmountOfMovies, ArrayList<Movie> userMovies) {
+        //Taken from https://www.baeldung.com/java-random-string
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
 
-    public void addMovieToUser(UUID userUuid, Movie movie) throws IOException {
-        for(User user: getUsers()){
-            if(user.id() == userUuid){
-                user.movies().add(movie);
-            }
+        for (int j = 0; j < generateAmountOfMovies; j++) {
+            String generatedMovieString = random.ints(leftLimit, rightLimit + 1)
+                    .limit(targetStringLength)
+                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString();
+            int ageLimit = random.nextInt(18);
+
+
+            userMovies.add(generateMovie(generatedMovieString,
+                                                Genre.values()[random.nextInt(Genre.values().length)],
+                                                ageLimit,
+                                                Language.values()[random.nextInt(Language.values().length)],
+                                                new ArrayList<>(),
+                                                "",
+                                                0));
         }
     }
 
