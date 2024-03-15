@@ -1,16 +1,13 @@
 package com.example.cgi_demo_app.endpoints;
 
 import com.example.cgi_demo_app.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
-import dev.hilla.Nonnull;
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -132,14 +129,17 @@ public class MoviesEndpoint {
         ArrayList<Movie> generatedMoviesList = new ArrayList<>();
 
 
-        generatedMoviesList.add(generateMovie("Dune2", Genre.ACTION, 13, Language.ENGLISH,  dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8157/landscape_fullhd/Dune2_Apollo_EHDh_3840x2160.jpg", 7));
-        generatedMoviesList.add(generateMovie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8824/landscape_qhd/AnyoneButYou_Digi_Landsc_1920x1080_EE(1).jpg", 5));
-        generatedMoviesList.add(generateMovie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8324/landscape_fullhd/Barbie_Apollo_EHDh_3840x2160_EE.jpg", 3));
-        generatedMoviesList.add(generateMovie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8493/landscape_fullhd/BobMarley_3840x2160.jpg", 4));
-        generatedMoviesList.add(generateMovie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8898/landscape_fullhd/Cat&Dog_EE_Apollo_EHDh_3840x2160.jpg", 8));
-        generatedMoviesList.add(generateMovie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8536/landscape_qhd/Ferrari_Digi_Landsc_1920x1080_EE_Main.jpg", 6));
-        generatedMoviesList.add(generateMovie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "https://images.markus.live/mcswebsites.blob.core.windows.net/1013/Event_8705/landscape_fullhd/KungFuPanda4_3840x2160.jpg", 10));
-
+        generatedMoviesList.add(generateMovie("Dune: Part Two ", Genre.ACTION, 13, Language.ENGLISH,  dates, "/pictures/movie_logos/Dune2.jpg", 7));
+        generatedMoviesList.add(generateMovie("Anyone But You", Genre.ROMANCE, 14, Language.ENGLISH, dates, "/pictures/movie_logos/AnyoneButYou.jpg", 5));
+        generatedMoviesList.add(generateMovie("Barbie", Genre.FANTASY, 18, Language.SPANISH, dates, "/pictures/movie_logos/Barbie.jpg", 3));
+        generatedMoviesList.add(generateMovie("Barbie", Genre.FANTASY, 18, Language.ENGLISH, dates, "/pictures/movie_logos/Barbie.jpg", 3));
+        generatedMoviesList.add(generateMovie("Bob Marley: One Love", Genre.DOCUMENTARY, 13, Language.ENGLISH, dates, "/pictures/movie_logos/BobMarley.jpg", 4));
+        generatedMoviesList.add(generateMovie("Cat & Dog", Genre.ACTION, 10, Language.ENGLISH, dates, "/pictures/movie_logos/CatNDog.jpg", 8));
+        generatedMoviesList.add(generateMovie("Ferrari", Genre.THRILLER, 16, Language.ENGLISH, dates, "/pictures/movie_logos/Ferrari.jpg", 6));
+        generatedMoviesList.add(generateMovie("Kung Fu Panda 4", Genre.ACTION, 5, Language.ENGLISH, dates, "/pictures/movie_logos/KungFuPanda4.jpg", 10));
+        //This line generate completely random movies with no real life counterparts so this can be used to generate movies for frontend testing
+        // but this doesn't generate dates or sessions so this can only be used to test the recommendation algorithm.
+        //generateRandomMoviesForUser(20, generatedMoviesList);
 
         for(Movie movie: generatedMoviesList){
             addNonDuplicateMoviesToMoviesList(movie);
@@ -147,9 +147,9 @@ public class MoviesEndpoint {
     }
 
     public void addNonDuplicateMoviesToMoviesList(Movie movieForTesting) {
-        if(!movieNames.contains(movieForTesting.name())) {
+        if(!movieNames.contains(movieForTesting.name()+movieForTesting.language())) {
             movies.add(movieForTesting);
-            movieNames.add(movieForTesting.name());
+            movieNames.add(movieForTesting.name()+movieForTesting.language());
         }
     }
 
@@ -204,7 +204,7 @@ public class MoviesEndpoint {
 
                 String fullName = nameGenerator.generateName("src/main/java/com/example/cgi_demo_app/Names.txt");
 
-                generatRandomMoviesForUser(generateAmountOfMovies, userMovies);
+                generateRandomMoviesForUser(generateAmountOfMovies, userMovies);
 
                 User user = new User(uuid,
                         fullName.split(" ")[0],
@@ -216,7 +216,7 @@ public class MoviesEndpoint {
         }
     }
 
-    private void generatRandomMoviesForUser(int generateAmountOfMovies, ArrayList<Movie> userMovies) {
+    private void generateRandomMoviesForUser(int generateAmountOfMovies, ArrayList<Movie> userMovies) {
         //Taken from https://www.baeldung.com/java-random-string
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
