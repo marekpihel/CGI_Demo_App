@@ -1,7 +1,6 @@
-package com.example.cgi_demo_app;
+package com.example.cgi_demo_app.generators;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,15 +20,19 @@ public class NameGenerator {
             while(line != null){
                 line = bf.readLine();
                 if(line==null) break;
-                if(line.equals("$name")){
-                    nameListSelector = 0;
-                    continue;
-                } else if (line.equals("$namef")){
-                    nameListSelector = 1;
-                    continue;
-                } else if (line.equals("$surname")){
-                    nameListSelector = 2;
-                    continue;
+                switch (line) {
+                    case "$name" -> {
+                        nameListSelector = 0;
+                        continue;
+                    }
+                    case "$namef" -> {
+                        nameListSelector = 1;
+                        continue;
+                    }
+                    case "$surname" -> {
+                        nameListSelector = 2;
+                        continue;
+                    }
                 }
 
                 if(nameListSelector == 0){
@@ -49,7 +52,7 @@ public class NameGenerator {
 
         if(selectMaleOrFemaleNames == 0){
             generatedName += maleNames.get(random.nextInt(maleNames.size()));
-        } else if(selectMaleOrFemaleNames == 1){
+        } else {
             generatedName += femaleNames.get(random.nextInt(femaleNames.size()));
         }
         generatedName += " ";

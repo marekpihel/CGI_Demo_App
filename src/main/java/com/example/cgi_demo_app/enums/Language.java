@@ -1,4 +1,4 @@
-package com.example.cgi_demo_app;
+package com.example.cgi_demo_app.enums;
 
 public enum Language{
     ENGLISH,
