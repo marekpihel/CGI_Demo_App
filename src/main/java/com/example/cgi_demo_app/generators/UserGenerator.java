@@ -37,7 +37,7 @@ public class UserGenerator {
 
                 String fullName = nameGenerator.generateName("src/main/resources/static/Names.txt");
 
-                movieGenerator.generateRandomMoviesForUser(generateAmountOfMovies, userMovies);
+                movieGenerator.generateRandomMovies(generateAmountOfMovies, userMovies);
 
                 User user = new User(uuid,
                         fullName.split(" ")[0],

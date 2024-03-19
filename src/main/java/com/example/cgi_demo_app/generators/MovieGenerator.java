@@ -102,7 +102,7 @@ public class MovieGenerator {
         }
     }
 
-    private Movie generateMovie(String name,
+    public Movie generateMovie(String name,
                                        Genre genre,
                                        int ageLimit,
                                        Language language,
@@ -145,9 +145,9 @@ public class MovieGenerator {
             }
             for (int day = today; day < today + generatedDays; day++) {
                 if (day > maxDaysInCurrentMonth) {
-                    dates.add(getDateToAdd(day % maxDaysInCurrentMonth, calendar));
+                    dates.add(getDateToAdd(day % maxDaysInCurrentMonth, calendar, today));
                 } else {
-                    dates.add(getDateToAdd(day, calendar));
+                    dates.add(getDateToAdd(day, calendar, today));
                 }
             }
         }
@@ -206,15 +206,20 @@ public class MovieGenerator {
     }
 
 
-    private String getDateToAdd(int day, Calendar calendar) {
+    private String getDateToAdd(int day, Calendar calendar, int today) {
         String formattedDay = day < 10 ? "0" + day : String.valueOf(day);
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = 0;
+        if(day < today){
+            month = calendar.get(Calendar.MONTH) + 2;
+        } else {
+            month = calendar.get(Calendar.MONTH) + 1;
+        }
         String monthToAdd = month < 10 ? "0" + month : String.valueOf(month);
 
         return formattedDay + "." + monthToAdd + "." + calendar.get(Calendar.YEAR);
     }
 
-    void generateRandomMoviesForUser(int generateAmountOfMovies, ArrayList<Movie> userMovies) {
+    public void generateRandomMovies(int generateAmountOfMovies, ArrayList<Movie> userMovies) {
         //Taken from https://www.baeldung.com/java-random-string
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
