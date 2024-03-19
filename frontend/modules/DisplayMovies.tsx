@@ -126,6 +126,7 @@ export const gridOfMovies = (
                     <span style={{padding: "10px"}}>Genre: {movie.genre}</span>
                     <span style={{padding: "10px"}}>Language: {movie.language}</span>
                     <span style={{padding: "10px"}}>Age restriction: {movie.ageLimit}</span>
+                    <span style={{padding: "10px"}}>Duration: {movie.duration}</span>
                 </HorizontalLayout>
                 <HorizontalLayout>
                     {getDatesForMovie(movie, expandedMovie, timeFilter, setExpandedMovie)}

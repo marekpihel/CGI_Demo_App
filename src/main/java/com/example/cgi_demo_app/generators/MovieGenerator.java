@@ -35,56 +35,64 @@ public class MovieGenerator {
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/Dune2.jpg",
-                7));
+                7,
+                "2:46"));
         generatedMoviesList.add(generateMovie("Anyone But You",
                 Genre.ROMANCE,
                 14,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/AnyoneButYou.jpg",
-                5));
+                5,
+                "1:43"));
         generatedMoviesList.add(generateMovie("Barbie",
                 Genre.FANTASY,
                 18,
                 Language.SPANISH,
                 dates,
                 "/pictures/movie_logos/Barbie.jpg",
-                3));
+                3,
+                "1:54"));
         generatedMoviesList.add(generateMovie("Barbie",
                 Genre.FANTASY,
                 18,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/Barbie.jpg",
-                3));
+                3,
+                "1:54"));
         generatedMoviesList.add(generateMovie("Bob Marley: One Love",
                 Genre.DOCUMENTARY,
                 13,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/BobMarley.jpg",
-                4));
+                4,
+                "1:47"));
         generatedMoviesList.add(generateMovie("Cat & Dog",
                 Genre.ACTION,
                 10,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/CatNDog.jpg",
-                8));
+                8,
+                "1:20"));
         generatedMoviesList.add(generateMovie("Ferrari",
                 Genre.THRILLER,
                 16,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/Ferrari.jpg",
-                6));
+                6,
+                "2:11"));
         generatedMoviesList.add(generateMovie("Kung Fu Panda 4",
                 Genre.ACTION,
                 5,
                 Language.ENGLISH,
                 dates,
                 "/pictures/movie_logos/KungFuPanda4.jpg",
-                10));
+                10,
+                "1:34"));
         //This line generate completely random movies with no real life counterparts so this can be used to generate movies for frontend testing
         // but this doesn't generate dates or sessions so this can only be used to test the recommendation algorithm.
         //generateRandomMoviesForUser(20, generatedMoviesList);
@@ -100,7 +108,8 @@ public class MovieGenerator {
                                        Language language,
                                        ArrayList<String> dates,
                                        String imgLocation,
-                                       int sessionsPerDay){
+                                       int sessionsPerDay,
+                                       String duration){
 
         return new Movie(name,
                 genre,
@@ -108,7 +117,8 @@ public class MovieGenerator {
                 language,
                 dates,
                 generateSessionsForDates(sessionsPerDay),
-                imgLocation);
+                imgLocation,
+                duration);
     }
 
     public void addNonDuplicateMoviesToMoviesList(Movie movieForTesting) {
@@ -228,7 +238,8 @@ public class MovieGenerator {
                     Language.values()[random.nextInt(Language.values().length)],
                     new ArrayList<>(),
                     "",
-                    0));
+                    0,
+                    "00:00"));
         }
     }
 

@@ -56,4 +56,17 @@ public class SeatingGenerator {
             generatedSeating.add(currentRow);
         }
     }
+
+    public void addSeatsToSeating(List<List<Integer>> seatsToBook, String movieInformation) {
+        List<List<Integer>> movieSeating = movieSessionSeatingInfo.get(movieInformation);
+
+        for (List<Integer> seat: seatsToBook){
+            int row = seat.get(0);
+            int column = seat.get(1);
+            List<Integer> rowList = movieSeating.get(row);
+            rowList.set(column, 1);
+        }
+
+        movieSessionSeatingInfo.put(movieInformation, movieSeating);
+    }
 }

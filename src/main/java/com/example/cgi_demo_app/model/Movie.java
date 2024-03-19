@@ -12,7 +12,8 @@ public record Movie(
         Language language,
         ArrayList<String> dates,
         ArrayList<String> sessions,
-        String imgLocation){
+        String imgLocation,
+        String duration){
 
     public static Movie createMovie(String name,
                                     Genre genre,
@@ -20,7 +21,8 @@ public record Movie(
                                     Language language,
                                     ArrayList<String> dates,
                                     ArrayList<String> sessions,
-                                    String imgLocation){
+                                    String imgLocation,
+                                    String duration){
 
         return new Movie(name,
                 genre,
@@ -28,7 +30,8 @@ public record Movie(
                 language,
                 dates,
                 sessions,
-                imgLocation);
+                imgLocation,
+                duration);
     }
 
 }

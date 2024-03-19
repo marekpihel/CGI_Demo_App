@@ -6,6 +6,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Endpoint
@@ -18,5 +19,8 @@ public class SeatingEndpoint {
         return seatingGenerator.getSeatingForMovieSession(movieInformation);
     }
 
+    public void addSeatsToSeating(List<List<Integer>> seatsToBook, String movieInformation){
+        seatingGenerator.addSeatsToSeating(seatsToBook, movieInformation);
+    }
 
 }

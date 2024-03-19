@@ -18,6 +18,7 @@ import { ticketPurchaseDialog } from "Frontend/modules/dialogs/TicketPurchaseDia
 import { seatingRecommendationDialog } from "Frontend/modules/dialogs/SeatingRecommendationDialog";
 import Language from "Frontend/generated/com/example/cgi_demo_app/enums/Language";
 import Genre from "Frontend/generated/com/example/cgi_demo_app/enums/Genre";
+import { durationFilter } from "Frontend/modules/filters/DurationFilter";
 
 
 const h1Style = {
@@ -45,6 +46,7 @@ export default function MoviesView() {
     const [seatingDialogOpened, setSeatingDialogOpened] = useState<boolean>(false);
     const [activeUserId, setActiveUserId] = useState("");
     const [seating, setSeating] = useState<Array<Array<number>>>(Array<Array<number>>)
+    const [durationFilterValue, setDurationFilterValue] = useState<string>("")
 
     useEffect(() => {
         getMoviesFromServer().then();
@@ -110,6 +112,8 @@ export default function MoviesView() {
                     {ageFilter(movies ?? [], filterAgeLimit ?? "", setFilteredMovies, setFilterAgeLimit)}
 
                     {startTimeFilter(timeFilter, setTimeFilter)}
+
+                    {durationFilter(movies ?? [], durationFilterValue ?? "", setDurationFilterValue, setFilteredMovies)}
 
                     {recommendFilter(movies ?? [], users ?? [], activeUserId, setFilteredMovies)}
 

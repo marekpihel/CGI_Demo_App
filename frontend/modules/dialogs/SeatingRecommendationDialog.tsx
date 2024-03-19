@@ -37,7 +37,7 @@ export const seatingRecommendationDialog = (
         setTicketAmount: React.Dispatch<React.SetStateAction<string>>,
         setSeating: React.Dispatch<React.SetStateAction<Array<Array<number>>>>
     ) => {
-
+    let confirmedSeats: Array<Array<number>> = [];
 
 
     async function getSeatingFromServer(){
@@ -69,6 +69,30 @@ export const seatingRecommendationDialog = (
         return suitableSpots;
     }
 
+    function addAdjecentSeatingToCheck(currentPoint: number[], rowMidpoint: number, pointsToCheck: any[], beenPoints: any[], columnMidpoint: number) {
+        for (let i = -1; i < 2; i++) {
+            if (
+                currentPoint[0] + i >= 0 &&
+                currentPoint[0] + i < rowMidpoint &&
+                !pointsToCheck.some(point => point[0] === currentPoint[0] + i && point[1] === currentPoint[1]) &&
+                !beenPoints.some(point => point[0] === currentPoint[0] + i && point[1] === currentPoint[1])
+            ) {
+                pointsToCheck.push([currentPoint[0] + i, currentPoint[1]]);
+            }
+        }
+
+        for (let i = -1; i < 2; i++) {
+            if (
+                currentPoint[1] + i >= 0 &&
+                currentPoint[1] + i < columnMidpoint &&
+                !pointsToCheck.some(point => point[0] === currentPoint[0] && point[1] === currentPoint[1] + i) &&
+                !beenPoints.some(point => point[0] === currentPoint[0] && point[1] === currentPoint[1] + i)
+            ) {
+                pointsToCheck.push([currentPoint[0], currentPoint[1] + i]);
+            }
+        }
+    }
+
     function insertRecommendationSeatsIntoSeating(){
         if(!seatingDialogOpened){
             return;
@@ -93,27 +117,7 @@ export const seatingRecommendationDialog = (
 
             currentPoint = pointsToCheck.shift() ?? [];
             // Check neighboring points
-            for (let i = -1; i < 2; i++) {
-                if (
-                    currentPoint[0] + i >= 0 &&
-                    currentPoint[0] + i < rowMidpoint &&
-                    !pointsToCheck.some(point => point[0] === currentPoint[0] + i && point[1] === currentPoint[1]) &&
-                    !beenPoints.some(point => point[0] === currentPoint[0] + i && point[1] === currentPoint[1])
-                ) {
-                    pointsToCheck.push([currentPoint[0] + i, currentPoint[1]]);
-                }
-            }
-
-            for (let i = -1; i < 2; i++) {
-                if (
-                    currentPoint[1] + i >= 0 &&
-                    currentPoint[1] + i < columnMidpoint &&
-                    !pointsToCheck.some(point => point[0] === currentPoint[0] && point[1] === currentPoint[1] + i) &&
-                    !beenPoints.some(point => point[0] === currentPoint[0] && point[1] === currentPoint[1] + i)
-                ) {
-                    pointsToCheck.push([currentPoint[0], currentPoint[1] + i]);
-                }
-            }
+            addAdjecentSeatingToCheck(currentPoint, rowMidpoint, pointsToCheck, beenPoints, columnMidpoint);
 
             if(seating?.[currentPoint[0]]?.[currentPoint[1]] !== undefined &&
                 seating?.[currentPoint[0]]?.[currentPoint[1]] == 0 &&
@@ -125,6 +129,7 @@ export const seatingRecommendationDialog = (
                 for (let i = 0; i < parseInt(ticketAmount); i++) {
                     if (seating?.[currentPoint[0]]?.[currentPoint[1] + i] !== undefined) {
                         seating[currentPoint[0]][currentPoint[1] + i] = 2;
+                        confirmedSeats.push([currentPoint[0], currentPoint[1] + i]);
                     }
                 }
                 sideBySideSeatingAvailable = true;
@@ -141,6 +146,7 @@ export const seatingRecommendationDialog = (
             for (let seat = 0; seat < parseInt(ticketAmount); seat++) {
                 freeSeat = freeSeats.shift() ?? [];
                 seating[freeSeat[0]][freeSeat[1]] = 2;
+                confirmedSeats.push(freeSeat);
             }
             return;
         } else {
@@ -152,6 +158,14 @@ export const seatingRecommendationDialog = (
     }
 
     const handleSeatingConfirm = () => {
+        SeatingEndpoint.addSeatsToSeating(confirmedSeats,
+            selectedMovieName + "," +
+            selectedDate + "," +
+            selectedSession + "," +
+            selectedMovieLanguage);
+
+        confirmedSeats = [];
+        hasSeating = false;
         setSeatingDialogOpened(false);
         setTicketDialogOpened(false);
         setSelectedMovieName("");
@@ -172,6 +186,7 @@ export const seatingRecommendationDialog = (
 
     const handleSeatingCancel = () => {
         hasSeating = false;
+        confirmedSeats = [];
         removeRecommendedSeating();
         setSeatingDialogOpened(false);
         setTicketDialogOpened(false);
