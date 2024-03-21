@@ -19,9 +19,10 @@ import { seatingRecommendationDialog } from "Frontend/modules/dialogs/SeatingRec
 import Language from "Frontend/generated/com/example/cgi_demo_app/enums/Language";
 import Genre from "Frontend/generated/com/example/cgi_demo_app/enums/Genre";
 import { durationFilter } from "Frontend/modules/filters/DurationFilter";
+import CSS from "csstype";
 
 
-const h1Style = {
+const h1Style: CSS.Properties = {
     fontSize: 'var(--lumo-font-size-l)',
     margin: 'var(--lumo-space-m)',
     marginLeft: "0px",

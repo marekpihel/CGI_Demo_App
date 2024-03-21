@@ -5,15 +5,16 @@ import {VerticalLayout} from "@hilla/react-components/VerticalLayout";
 import {HorizontalLayout} from "@hilla/react-components/HorizontalLayout";
 import {SeatingEndpoint} from "Frontend/generated/endpoints";
 import {Notification} from "@hilla/react-components/Notification";
+import CSS from "csstype";
 
-const screenStyle = {
+const screenStyle: CSS.Properties = {
     width: "100%",
     marginRight: "auto",
     marginLeft: "auto",
     height: "128px"
 };
 
-const projectorStyle = {
+const projectorStyle: CSS.Properties = {
     width: "auto",
     marginRight: "auto",
     marginLeft: "auto",

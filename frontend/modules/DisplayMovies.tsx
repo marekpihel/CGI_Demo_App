@@ -6,15 +6,16 @@ import {HorizontalLayout} from "@hilla/react-components/HorizontalLayout";
 import {VerticalLayout} from "@hilla/react-components/VerticalLayout";
 import {Details} from "@hilla/react-components/Details";
 import {Button} from "@hilla/react-components/Button";
+import CSS from "csstype";
 
-const movieLogoStyle = {
+const movieLogoStyle: CSS.Properties = {
     height: "64px",
     width: "128px",
     borderRadius: ".5rem",
 
 };
 
-const movieDateRowStyle = {
+const movieDateRowStyle: CSS.Properties = {
     margin: "5px",
     outlineWidth: "2px",
     outlineStyle: "solid",
@@ -22,18 +23,18 @@ const movieDateRowStyle = {
     outlineColor: "darkGray"
 };
 
-const movieDateDisplayStyle = {
+const movieDateDisplayStyle: CSS.Properties = {
     marginRight: "20px",
     color: "black",
     backgroundColor: "transparent"
 };
 
-const sessionButtonDisplayStyle = {
+const sessionButtonDisplayStyle: CSS.Properties = {
     marginRight: "20px",
     outlineColor: "gray",
     outlineStyle: "solid",
     outlineWidth: "2px",
-    borerRadius: "2em",
+    borderRadius: "2em",
     backgroundColor: "lightGray"
 };
 

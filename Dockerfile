@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x gradlew
+
 # Install dependencies using Gradle
 RUN ./gradlew clean build test
 
