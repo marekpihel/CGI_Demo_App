@@ -12,6 +12,8 @@ public class UserGenerator {
     MovieGenerator movieGenerator = new MovieGenerator();
     ArrayList<User> users = new ArrayList<>();
 
+
+
     public ArrayList<User> getUsers() throws IOException {
         populateUsersIfThereIsNone();
         return users;
@@ -35,7 +37,7 @@ public class UserGenerator {
 
                 userUuids.add(uuid);
 
-                String fullName = nameGenerator.generateName("src/main/resources/static/Names.txt");
+                String fullName = nameGenerator.generateName();
 
                 movieGenerator.generateRandomMovies(generateAmountOfMovies, userMovies);
 

@@ -19,8 +19,10 @@
     "@hilla/react-crud": "2.5.5",
     "@hilla/react-form": "2.5.5",
     "@polymer/polymer": "3.5.1",
-    "@vaadin/bundles": "24.3.0",
+    "@vaadin/bundles": "^24.3.9",
     "@vaadin/common-frontend": "0.0.19",
+    "@vaadin/icon": "^24.3.9",
+    "@vaadin/icons": "^24.3.9",
     "@vaadin/router": "1.7.5",
     "classnames": "^2.3.2",
     "construct-style-sheets-polyfill": "3.1.0",
@@ -75,7 +77,9 @@
     "@hilla/generator-typescript-plugin-subtypes": "$@hilla/generator-typescript-plugin-subtypes",
     "@hilla/react-crud": "$@hilla/react-crud",
     "@hilla/generator-typescript-plugin-backbone": "$@hilla/generator-typescript-plugin-backbone",
-    "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli"
+    "@hilla/generator-typescript-cli": "$@hilla/generator-typescript-cli",
+    "@vaadin/icon": "$@vaadin/icon",
+    "@vaadin/icons": "$@vaadin/icons"
   },
   "vaadin": {
     "dependencies": {
@@ -119,6 +123,6 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "28907108e9d1379386c9cc450d5cc00c7e27c09cc95e10ed481ae788af6262fa"
+    "hash": "cb9298ad6e5be12a90f3195c1bcefa10488dc2023844f4451c6d38428989bc1a"
   }
 }

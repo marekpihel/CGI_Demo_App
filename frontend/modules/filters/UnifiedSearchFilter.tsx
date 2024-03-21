@@ -9,7 +9,6 @@ export const unifiedSearchFilter = (
                            setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>) => {
 
 
-
     return (
         <TextField
             placeholder="Search movies"
@@ -28,7 +27,7 @@ export const unifiedSearchFilter = (
                 );
             }}
         >
-            <Icon slot="prefix" icon="vaadin:search"></Icon>
+            <Icon slot="prefix" style={{content: `url("/VAADIN/icons/png/search.png")`, height: "16px", width: "16px"}}></Icon>
         </TextField>
     );
 };

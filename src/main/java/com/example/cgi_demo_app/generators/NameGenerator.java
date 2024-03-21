@@ -1,24 +1,25 @@
 package com.example.cgi_demo_app.generators;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class NameGenerator {
     ArrayList<String> maleNames = new ArrayList<>();
     ArrayList<String> femaleNames = new ArrayList<>();
     ArrayList<String> surNames = new ArrayList<>();
 
-    public String generateName(String filename) throws IOException {
+    public String generateName() throws IOException {
         String generatedName = "";
         if( maleNames.isEmpty() && femaleNames.isEmpty() && surNames.isEmpty()){
-            BufferedReader bf=new BufferedReader (new FileReader(filename));
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/Names.txt");
+            Scanner scanner = new Scanner(inputStream);
             String line = "";
             int nameListSelector = 0;
-            while(line != null){
-                line = bf.readLine();
+            while(scanner.hasNextLine()){
+                line = scanner.nextLine();
                 if(line==null) break;
                 switch (line) {
                     case "$name" -> {
@@ -43,7 +44,7 @@ public class NameGenerator {
                     surNames.add(line);
                 }
             }
-            bf.close();
+            inputStream.close();
         }
 
         Random random = new Random();

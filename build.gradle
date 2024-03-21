@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
     sourceCompatibility = '21'
@@ -44,6 +44,32 @@ dependencyManagement {
     }
 }
 
+task copyVaadinIcons(type: Copy) {
+    from('node_modules/@vaadin/icons/assets/') {
+        include '**/*.woff'
+        include '**/*.woff2'
+        include '**/*.png'
+        include '**/*.svg'
+    }
+    into 'src/main/resources/static/icons/'
+}
+
+// Include copied icons in the resources
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
+
+// Ensure copying of icons task before building
+assemble.dependsOn(copyVaadinIcons)
+
+processResources {
+    dependsOn copyVaadinIcons
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
@@ -57,4 +83,6 @@ application {
     applicationDefaultJvmArgs = ['-Dgreeting.language=en']
     mainClass =  'com.example.cgi_demo_app.CgiDemoAppApplication'
 }
+
+// Copy only necessary Vaadin icon files to resources directory
 
