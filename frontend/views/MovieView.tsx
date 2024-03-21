@@ -49,10 +49,10 @@ export default function MoviesView() {
     const [durationFilterValue, setDurationFilterValue] = useState<string>("")
 
     useEffect(() => {
-        getMoviesFromServer().then();
-        getGenresFromServer().then();
-        getLanguagesFromServer().then();
-        getUsersFromServer().then();
+        getMoviesFromServer();
+        getGenresFromServer();
+        getLanguagesFromServer();
+        getUsersFromServer();
     }, []);
 
     async function getGenresFromServer() {

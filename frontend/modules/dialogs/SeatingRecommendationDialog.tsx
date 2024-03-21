@@ -69,7 +69,7 @@ export const seatingRecommendationDialog = (
         return suitableSpots;
     }
 
-    function addAdjecentSeatingToCheck(currentPoint: number[], rowMidpoint: number, pointsToCheck: any[], beenPoints: any[], columnMidpoint: number) {
+    function addAdjacentSeatingToCheck(currentPoint: number[], rowMidpoint: number, pointsToCheck: any[], beenPoints: any[], columnMidpoint: number) {
         for (let i = -1; i < 2; i++) {
             if (
                 currentPoint[0] + i >= 0 &&
@@ -117,7 +117,7 @@ export const seatingRecommendationDialog = (
 
             currentPoint = pointsToCheck.shift() ?? [];
             // Check neighboring points
-            addAdjecentSeatingToCheck(currentPoint, rowMidpoint, pointsToCheck, beenPoints, columnMidpoint);
+            addAdjacentSeatingToCheck(currentPoint, rowMidpoint, pointsToCheck, beenPoints, columnMidpoint);
 
             if(seating?.[currentPoint[0]]?.[currentPoint[1]] !== undefined &&
                 seating?.[currentPoint[0]]?.[currentPoint[1]] == 0 &&
@@ -150,7 +150,7 @@ export const seatingRecommendationDialog = (
             }
             return;
         } else {
-            Notification.show("There aren't enough seats avilable.", {
+            Notification.show("There aren't enough seats available.", {
                 theme: 'warning',
             });
             handleSeatingCancel();
@@ -226,6 +226,7 @@ export const seatingRecommendationDialog = (
         getSeatingFromServer();
     }
     if(hasSeating){
+        removeRecommendedSeating();
         insertRecommendationSeatsIntoSeating();
     }
 

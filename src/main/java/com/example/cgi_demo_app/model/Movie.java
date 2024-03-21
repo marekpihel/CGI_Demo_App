@@ -2,6 +2,7 @@ package com.example.cgi_demo_app.model;
 
 import com.example.cgi_demo_app.enums.Genre;
 import com.example.cgi_demo_app.enums.Language;
+import lombok.Setter;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public record Movie(
         ArrayList<String> sessions,
         String imgLocation,
         String duration){
+
 
     public static Movie createMovie(String name,
                                     Genre genre,

@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.Random;
 
 public class MovieGenerator {
@@ -27,7 +28,6 @@ public class MovieGenerator {
 
     public void generateTestingMovies(ArrayList<String> dates){
         ArrayList<Movie> generatedMoviesList = new ArrayList<>();
-        generateDatesForSessions();
 
         generatedMoviesList.add(generateMovie(" Dune: Part Two ",
                 Genre.ACTION,
@@ -99,6 +99,18 @@ public class MovieGenerator {
 
         for(Movie movie: generatedMoviesList){
             addNonDuplicateMoviesToMoviesList(movie);
+            ifNecessaryChangeDates(movie);
+        }
+    }
+
+    private void ifNecessaryChangeDates(Movie movie) {
+        for (int i = 0; i < movies.size(); i++) {
+            if(Objects.equals(movies.get(i).name(), movie.name()) && movies.get(i).language().equals(movie.language())){
+                if(movies.get(i).dates() != movie.dates()) {
+                    movies.set(i, movie);
+                }
+                return;
+            }
         }
     }
 
@@ -129,27 +141,43 @@ public class MovieGenerator {
     }
 
     public void generateDatesForSessions() {
-        if(dates.isEmpty()) {
-            Calendar calendar = Calendar.getInstance();
-            int today = calendar.get(Calendar.DAY_OF_MONTH);
-            int generatedDays = 7;
-            int maxDaysInCurrentMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        Calendar calendar = Calendar.getInstance();
+        String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH.mm"));
+        double currentTime = Double.parseDouble(time);
+        double endTime = Double.parseDouble(END_TIME);
+        int today = calendar.get(Calendar.DAY_OF_MONTH);
+        int generatedDays = 7;
+        int maxDaysInCurrentMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 
-            String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH.mm"));
-            double currentTime = Double.parseDouble(time);
-            double endTime = Double.parseDouble(END_TIME);
+        if(!dates.isEmpty()){
+            if (currentTime >= endTime) {
 
+                int endDate = today + generatedDays;
+                endDate %= maxDaysInCurrentMonth;
+
+                if(today == Integer.parseInt(dates.getFirst().split("\\.")[0])){
+                    dates.removeFirst();
+                }
+                if(dates.size() < generatedDays){
+                    generateAndAddDate(endDate, maxDaysInCurrentMonth, calendar, today);
+                }
+            }
+        } else {
             if (currentTime >= endTime) {
                 today += 1;
                 today %= maxDaysInCurrentMonth;
             }
             for (int day = today; day < today + generatedDays; day++) {
-                if (day > maxDaysInCurrentMonth) {
-                    dates.add(getDateToAdd(day % maxDaysInCurrentMonth, calendar, today));
-                } else {
-                    dates.add(getDateToAdd(day, calendar, today));
-                }
+                generateAndAddDate(day, maxDaysInCurrentMonth, calendar, today);
             }
+        }
+    }
+
+    private void generateAndAddDate(int endDate, int maxDaysInCurrentMonth, Calendar calendar, int today) {
+        if (endDate > maxDaysInCurrentMonth) {
+            dates.add(getDateToAdd(endDate % maxDaysInCurrentMonth, calendar, today));
+        } else {
+            dates.add(getDateToAdd(endDate, calendar, today));
         }
     }
 
