@@ -1,13 +1,7 @@
-version: ''
+version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
       - "8080:8080"
-    volumes:
-      - /:/app
-
-
