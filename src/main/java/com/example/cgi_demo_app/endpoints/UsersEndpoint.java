@@ -1,7 +1,7 @@
 package com.example.cgi_demo_app.endpoints;
 
-import com.example.cgi_demo_app.model.User;
 import com.example.cgi_demo_app.generators.UserGenerator;
+import com.example.cgi_demo_app.model.User;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.hilla.Endpoint;
 

@@ -1,3 +1,3 @@
-vaadin-drawer-toggle::part(icon){
+vaadin-drawer-toggle::part(icon) {
     content: url("/icons/svg/filter.svg");
 }

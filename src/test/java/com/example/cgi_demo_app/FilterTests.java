@@ -24,14 +24,14 @@ public class FilterTests {
 
 
     @Test
-    void testGenreFilter(){
+    void testGenreFilter() {
         Genre[] genresFromEndpoint = filtersEndpoint.getGenres();
 
         assert Arrays.equals(genresFromEndpoint, Genre.values());
     }
 
     @Test
-    void testLanguageFilter(){
+    void testLanguageFilter() {
         Language[] languagesFromEndpoint = filtersEndpoint.getLanguages();
 
         assert Arrays.equals(languagesFromEndpoint, Language.values());

@@ -5,12 +5,12 @@ import React from "react";
 
 
 export const selectUser = (users: User[],
-                             movies: Movie[],
-                             setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>,
-                             setActiveUserId: React.Dispatch<React.SetStateAction<string>>) => {
+                           movies: Movie[],
+                           setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>,
+                           setActiveUserId: React.Dispatch<React.SetStateAction<string>>) => {
     const activeUserChanged = (e: ComboBoxFilterChangedEvent) => {
         let userId = e.detail.value;
-        if(userId.length == 0){
+        if (userId.length == 0) {
             setFilteredMovies(movies);
         }
         setActiveUserId(userId);
@@ -25,8 +25,8 @@ export const selectUser = (users: User[],
             filteredItems={users}
             onValueChanged={activeUserChanged}
             clearButtonVisible
-            renderer={({ item: user }) => (
-                <div style={{ display: 'flex' }}>
+            renderer={({item: user}) => (
+                <div style={{display: 'flex'}}>
                     <div>
                         {user.firstName} {user.lastName}
                         <div hidden id={"activeUserId"}>

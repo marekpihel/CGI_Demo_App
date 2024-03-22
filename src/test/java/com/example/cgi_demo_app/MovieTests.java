@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+
 @SpringBootTest
 public class MovieTests {
 
@@ -34,7 +35,7 @@ public class MovieTests {
     ArrayList<Movie> mockMovies = new ArrayList<>();
 
     @Test
-    void testCreateMovieCreatesMovie(){
+    void testCreateMovieCreatesMovie() {
         Movie movie = Movie.createMovie("Testmovie",
                 Genre.ACTION,
                 18,
@@ -48,7 +49,7 @@ public class MovieTests {
     }
 
     @Test
-    void testGetMoviesEndpoint(){
+    void testGetMoviesEndpoint() {
         Movie movie = new Movie("Testmovie",
                 Genre.ACTION,
                 18,
@@ -67,7 +68,7 @@ public class MovieTests {
     }
 
     @Test
-    void testGetMoviesGenerator()  {
+    void testGetMoviesGenerator() {
         MovieGenerator realMoviesGenerator = new MovieGenerator();
         List<Movie> realMovies = realMoviesGenerator.getMovies();
         int moviesAmount = 8;
@@ -76,7 +77,7 @@ public class MovieTests {
     }
 
     @Test
-    void testGenerateMovie()  {
+    void testGenerateMovie() {
         Movie movie = new Movie("Testmovie",
                 Genre.ACTION,
                 18,
@@ -102,7 +103,7 @@ public class MovieTests {
     }
 
     @Test
-    void testGenerateRandomAmountOfMovies(){
+    void testGenerateRandomAmountOfMovies() {
         MovieGenerator movieGenerator1 = new MovieGenerator();
         ArrayList<Movie> movies = new ArrayList<>();
         int generateAmountOfMovies = 10;
@@ -113,7 +114,7 @@ public class MovieTests {
     }
 
     @Test
-    void testRoundingRoundsToTwoPoints(){
+    void testRoundingRoundsToTwoPoints() {
         MovieGenerator movieGenerator1 = new MovieGenerator();
         double initialValue = 0.323;
         double roundedValue = movieGenerator1.round(initialValue, 2);

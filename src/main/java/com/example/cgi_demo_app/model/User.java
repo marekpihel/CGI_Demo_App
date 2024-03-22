@@ -8,12 +8,12 @@ public record User(
         String firstName,
         String lastName,
         ArrayList<Movie> movies
-        ){
+) {
 
     public static User createUser(String firstName,
                                   String lastName,
                                   UUID id,
-                                  ArrayList<Movie> movies){
+                                  ArrayList<Movie> movies) {
 
         return new User(id,
                 firstName,

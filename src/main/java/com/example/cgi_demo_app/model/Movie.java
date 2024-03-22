@@ -2,7 +2,6 @@ package com.example.cgi_demo_app.model;
 
 import com.example.cgi_demo_app.enums.Genre;
 import com.example.cgi_demo_app.enums.Language;
-import lombok.Setter;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ public record Movie(
         ArrayList<String> dates,
         ArrayList<String> sessions,
         String imgLocation,
-        String duration){
+        String duration) {
 
 
     public static Movie createMovie(String name,
@@ -24,7 +23,7 @@ public record Movie(
                                     ArrayList<String> dates,
                                     ArrayList<String> sessions,
                                     String imgLocation,
-                                    String duration){
+                                    String duration) {
 
         return new Movie(name,
                 genre,

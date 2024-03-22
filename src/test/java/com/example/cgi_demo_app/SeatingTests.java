@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -30,16 +30,16 @@ public class SeatingTests {
     }
 
     List<List<Integer>> mockSeating = Arrays.asList(
-            Arrays.asList(0,0,0,0,0),
-            Arrays.asList(0,1,0,0,0),
-            Arrays.asList(0,0,1,0,0),
-            Arrays.asList(0,0,0,1,0),
-            Arrays.asList(0,0,0,0,0)
+            Arrays.asList(0, 0, 0, 0, 0),
+            Arrays.asList(0, 1, 0, 0, 0),
+            Arrays.asList(0, 0, 1, 0, 0),
+            Arrays.asList(0, 0, 0, 1, 0),
+            Arrays.asList(0, 0, 0, 0, 0)
     );
     String movieInformation = "TestMovie";
 
     @Test
-    void testGetSeating(){
+    void testGetSeating() {
         when(seatingGenerator.getSeatingForMovieSession(movieInformation)).thenReturn(mockSeating);
 
         List<List<Integer>> seatingFromEndpoint = seatingEndpoint.getSeating(movieInformation);
@@ -48,15 +48,15 @@ public class SeatingTests {
     }
 
     @Test
-    void testAddSeatChangesSeating(){
+    void testAddSeatChangesSeating() {
         SeatingEndpoint realEndpoint = new SeatingEndpoint();
         List<List<Integer>> seating = new ArrayList<>(realEndpoint.getSeating(movieInformation));
         List<List<Integer>> freeSeats = new ArrayList<>();
 
         for (int row = 0; row < seating.size(); row++) {
             for (int column = 0; column < seating.get(row).size(); column++) {
-                if(seating.get(row).get(column) == 0){
-                    if(freeSeats.size() < 5){
+                if (seating.get(row).get(column) == 0) {
+                    if (freeSeats.size() < 5) {
                         freeSeats.add(new ArrayList<>(Arrays.asList(row, column)));
                     }
                 }
@@ -66,8 +66,8 @@ public class SeatingTests {
         realEndpoint.addSeatsToSeating(freeSeats, movieInformation);
 
         boolean seatingChanged = true;
-        for(List<Integer> seat: freeSeats){
-            if(seating.get(seat.get(0)).get(seat.get(1)) != 1){
+        for (List<Integer> seat : freeSeats) {
+            if (seating.get(seat.get(0)).get(seat.get(1)) != 1) {
                 seatingChanged = false;
                 break;
             }

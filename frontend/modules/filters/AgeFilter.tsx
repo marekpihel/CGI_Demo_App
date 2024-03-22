@@ -9,14 +9,15 @@ export const ageFilter = (
     setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>,
     setFilterAgeLimit: React.Dispatch<React.SetStateAction<string>>) => {
 
-    const ageFilterChanged  = (e: NumberFieldChangeEvent) => {
+    const ageFilterChanged = (e: NumberFieldChangeEvent) => {
         const ageValue = e.target.value;
-        if(ageValue.length === 0){
+        if (ageValue.length === 0) {
             setFilteredMovies(movies);
+            setFilterAgeLimit("");
         } else {
             setFilterAgeLimit(ageValue);
             setFilteredMovies(
-                movies.filter(({ ageLimit }) =>
+                movies.filter(({ageLimit}) =>
                     ageLimit <= parseInt(ageValue)
                 )
             );

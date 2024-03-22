@@ -1,4 +1,4 @@
-import { MoviesEndpoint, FiltersEndpoint, UsersEndpoint } from "Frontend/generated/endpoints.js";
+import {FiltersEndpoint, MoviesEndpoint, UsersEndpoint} from "Frontend/generated/endpoints.js";
 import React, {useEffect, useState} from "react";
 import Movie from "Frontend/generated/com/example/cgi_demo_app/model/Movie";
 import User from "Frontend/generated/com/example/cgi_demo_app/model/User";
@@ -6,19 +6,19 @@ import {AppLayout} from "@hilla/react-components/AppLayout";
 import {Tabs} from "@hilla/react-components/Tabs";
 import {DrawerToggle} from "@hilla/react-components/DrawerToggle";
 import css from "../themes/my-theme/styles.module.css"
-import { selectUser } from "Frontend/modules/UserSelection";
-import { unifiedSearchFilter } from "Frontend/modules/filters/UnifiedSearchFilter";
-import { genreFilter } from "Frontend/modules/filters/GenreFilter";
-import { languageFilter } from "Frontend/modules/filters/LanguageFilter";
-import { ageFilter } from "Frontend/modules/filters/AgeFilter";
-import { startTimeFilter } from "Frontend/modules/filters/StartTimeFilter";
-import { recommendFilter } from "Frontend/modules/filters/RecommendFilter";
-import { gridOfMovies } from "Frontend/modules/DisplayMovies";
-import { ticketPurchaseDialog } from "Frontend/modules/dialogs/TicketPurchaseDialog";
-import { seatingRecommendationDialog } from "Frontend/modules/dialogs/SeatingRecommendationDialog";
+import {selectUser} from "Frontend/modules/UserSelection";
+import {unifiedSearchFilter} from "Frontend/modules/filters/UnifiedSearchFilter";
+import {genreFilter} from "Frontend/modules/filters/GenreFilter";
+import {languageFilter} from "Frontend/modules/filters/LanguageFilter";
+import {ageFilter} from "Frontend/modules/filters/AgeFilter";
+import {startTimeFilter} from "Frontend/modules/filters/StartTimeFilter";
+import {recommendFilter} from "Frontend/modules/filters/RecommendFilter";
+import {gridOfMovies} from "Frontend/modules/DisplayMovies";
+import {ticketPurchaseDialog} from "Frontend/modules/dialogs/TicketPurchaseDialog";
+import {seatingRecommendationDialog} from "Frontend/modules/dialogs/SeatingRecommendationDialog";
 import Language from "Frontend/generated/com/example/cgi_demo_app/enums/Language";
 import Genre from "Frontend/generated/com/example/cgi_demo_app/enums/Genre";
-import { durationFilter } from "Frontend/modules/filters/DurationFilter";
+import {durationFilter} from "Frontend/modules/filters/DurationFilter";
 import CSS from "csstype";
 
 

@@ -10,11 +10,15 @@ export const genreFilter = (
 
     const genreFilterChanged = (e: ComboBoxFilterChangedEvent) => {
         const filter = e.detail.value;
-        setFilteredMovies(
-            movies.filter(({ genre }) =>
-                genre?.toLowerCase().includes(filter.toLowerCase())
-            )
-        );
+        if (filter.length == 0) {
+            setFilteredMovies(movies);
+        } else {
+            setFilteredMovies(
+                movies.filter(({genre}) =>
+                    genre?.toLowerCase().includes(filter.toLowerCase())
+                )
+            );
+        }
     };
 
     return (

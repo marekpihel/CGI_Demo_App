@@ -10,11 +10,15 @@ export const languageFilter = (
 
     const languageFilterChanged = (e: ComboBoxFilterChangedEvent) => {
         const filter = e.detail.value;
-        setFilteredMovies(
-            movies.filter(({ language }) =>
-                language?.toLowerCase().includes(filter.toLowerCase())
-            )
-        );
+        if (filter.length == 0) {
+            setFilteredMovies(movies);
+        } else {
+            setFilteredMovies(
+                movies.filter(({language}) =>
+                    language?.toLowerCase().includes(filter.toLowerCase())
+                )
+            );
+        }
     };
 
     return (

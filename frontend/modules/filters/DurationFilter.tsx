@@ -9,15 +9,16 @@ export const durationFilter = (
     setDurationFilter: React.Dispatch<React.SetStateAction<string>>,
     setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>) => {
 
-    const durationChanged  = (e: TimePickerChangeEvent) => {
+    const durationChanged = (e: TimePickerChangeEvent) => {
         let durationValue = e.target.value;
 
-        if(durationValue.length === 0){
+        if (durationValue.length === 0) {
             setFilteredMovies(movies);
+            setDurationFilter("");
         } else {
             setFilteredMovies(
                 movies.filter(movie => {
-                    let movieDuration = "0"+movie.duration?.replace(":", ".");
+                    let movieDuration = "0" + movie.duration?.replace(":", ".");
                     let modifiedFilterValue = durationValue.replace(":", ".");
                     return parseFloat(movieDuration) <= parseFloat(modifiedFilterValue);
                 })

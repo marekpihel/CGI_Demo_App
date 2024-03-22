@@ -17,27 +17,27 @@ public class SeatingGenerator {
         int seatColumns = 10;
 
 
-        if(!movieSessionSeatingInfo.containsKey(movieInformation)){
+        if (!movieSessionSeatingInfo.containsKey(movieInformation)) {
             movieSessionSeatingInfo.put(movieInformation, generateRandomSeating(seatRows, seatColumns));
         }
 
         return movieSessionSeatingInfo.get(movieInformation);
     }
 
-    private List<List<Integer>> generateRandomSeating(int rows, int columns){
+    private List<List<Integer>> generateRandomSeating(int rows, int columns) {
         List<List<Integer>> generatedSeating = new ArrayList<>();
         Random random = new Random();
         int percentageFilled = random.nextInt(101);
-        int totalSeats = rows*columns;
-        int seatsToFill = totalSeats*percentageFilled/100;
+        int totalSeats = rows * columns;
+        int seatsToFill = totalSeats * percentageFilled / 100;
 
         initializeSeats(generatedSeating, rows, columns);
 
-        while(seatsToFill > 0){
+        while (seatsToFill > 0) {
             int row = random.nextInt(rows);
             int column = random.nextInt(columns);
             int seatStatus = generatedSeating.get(row).get(column);
-            if(seatStatus == 0){
+            if (seatStatus == 0) {
                 generatedSeating.get(row).set(column, 1);
                 seatsToFill--;
             }
@@ -60,7 +60,7 @@ public class SeatingGenerator {
     public void addSeatsToSeating(List<List<Integer>> seatsToBook, String movieInformation) {
         List<List<Integer>> movieSeating = movieSessionSeatingInfo.get(movieInformation);
 
-        for (List<Integer> seat: seatsToBook){
+        for (List<Integer> seat : seatsToBook) {
             int row = seat.get(0);
             int column = seat.get(1);
             List<Integer> rowList = movieSeating.get(row);

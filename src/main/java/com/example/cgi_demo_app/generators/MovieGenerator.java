@@ -26,7 +26,7 @@ public class MovieGenerator {
         return movies;
     }
 
-    public void generateTestingMovies(ArrayList<String> dates){
+    public void generateTestingMovies(ArrayList<String> dates) {
         ArrayList<Movie> generatedMoviesList = new ArrayList<>();
 
         generatedMoviesList.add(generateMovie(" Dune: Part Two ",
@@ -93,11 +93,8 @@ public class MovieGenerator {
                 "/pictures/movie_logos/KungFuPanda4.jpg",
                 10,
                 "1:34"));
-        //This line generate completely random movies with no real life counterparts so this can be used to generate movies for frontend testing
-        // but this doesn't generate dates or sessions so this can only be used to test the recommendation algorithm.
-        //generateRandomMoviesForUser(20, generatedMoviesList);
 
-        for(Movie movie: generatedMoviesList){
+        for (Movie movie : generatedMoviesList) {
             addNonDuplicateMoviesToMoviesList(movie);
             ifNecessaryChangeDates(movie);
         }
@@ -105,8 +102,8 @@ public class MovieGenerator {
 
     private void ifNecessaryChangeDates(Movie movie) {
         for (int i = 0; i < movies.size(); i++) {
-            if(Objects.equals(movies.get(i).name(), movie.name()) && movies.get(i).language().equals(movie.language())){
-                if(movies.get(i).dates() != movie.dates()) {
+            if (Objects.equals(movies.get(i).name(), movie.name()) && movies.get(i).language().equals(movie.language())) {
+                if (movies.get(i).dates() != movie.dates()) {
                     movies.set(i, movie);
                 }
                 return;
@@ -115,13 +112,13 @@ public class MovieGenerator {
     }
 
     public Movie generateMovie(String name,
-                                       Genre genre,
-                                       int ageLimit,
-                                       Language language,
-                                       ArrayList<String> dates,
-                                       String imgLocation,
-                                       int sessionsPerDay,
-                                       String duration){
+                               Genre genre,
+                               int ageLimit,
+                               Language language,
+                               ArrayList<String> dates,
+                               String imgLocation,
+                               int sessionsPerDay,
+                               String duration) {
 
         return new Movie(name,
                 genre,
@@ -134,9 +131,9 @@ public class MovieGenerator {
     }
 
     public void addNonDuplicateMoviesToMoviesList(Movie movieForTesting) {
-        if(!movieNames.contains(movieForTesting.name()+movieForTesting.language())) {
+        if (!movieNames.contains(movieForTesting.name() + movieForTesting.language())) {
             movies.add(movieForTesting);
-            movieNames.add(movieForTesting.name()+movieForTesting.language());
+            movieNames.add(movieForTesting.name() + movieForTesting.language());
         }
     }
 
@@ -149,16 +146,16 @@ public class MovieGenerator {
         int generatedDays = 7;
         int maxDaysInCurrentMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        if(!dates.isEmpty()){
+        if (!dates.isEmpty()) {
             if (currentTime >= endTime) {
 
                 int endDate = today + generatedDays;
                 endDate %= maxDaysInCurrentMonth;
 
-                if(today == Integer.parseInt(dates.getFirst().split("\\.")[0])){
+                if (today == Integer.parseInt(dates.getFirst().split("\\.")[0])) {
                     dates.removeFirst();
                 }
-                if(dates.size() < generatedDays){
+                if (dates.size() < generatedDays) {
                     generateAndAddDate(endDate, maxDaysInCurrentMonth, calendar, today);
                 }
             }
@@ -189,14 +186,13 @@ public class MovieGenerator {
         double startTime = Double.parseDouble(START_TIME);
 
 
-        double totalHours = endTime-startTime;
-        //*100 and then /100 is for rounding purposes
+        double totalHours = endTime - startTime;
         double timeBetweenTwoSessionStarts = (double) Math.round((totalHours / sessionsPerDay) * 100) / 100;
         double timeToNextSession = 0;
 
 
         for (int i = 0; i < sessionsPerDay; i++) {
-            if(i == 0){
+            if (i == 0) {
                 timeToNextSession = round(random.nextDouble(), 2);
             } else {
                 timeToNextSession += round(timeBetweenTwoSessionStarts + random.nextDouble() * 2 - 1, 2);
@@ -206,7 +202,7 @@ public class MovieGenerator {
         }
 
 
-        for(double session: sessionsAsDouble){
+        for (double session : sessionsAsDouble) {
             sessions.add(getSessionString(session));
         }
 
@@ -214,18 +210,14 @@ public class MovieGenerator {
     }
 
     private static String getSessionString(double session) {
-        //To explain the code a bit:
-        //We generate string value of the float in regular 60th system according to our time keeping
-        //First if statement adds zero in front if first value is not 2 digit one
-        //Second if statement adds zero to the beginning of minutes if some edge cases happen
         String sessionStringToAdd = "";
-        if(session < 10){
+        if (session < 10) {
             sessionStringToAdd += "0";
         }
-        int minutes = (int)((session - (int) session) * 60);
+        int minutes = (int) ((session - (int) session) * 60);
         sessionStringToAdd += (int) session + ".";
 
-        if(minutes < 10){
+        if (minutes < 10) {
             sessionStringToAdd += "0" + minutes;
         } else {
             sessionStringToAdd += minutes;
@@ -237,7 +229,7 @@ public class MovieGenerator {
     private String getDateToAdd(int day, Calendar calendar, int today) {
         String formattedDay = day < 10 ? "0" + day : String.valueOf(day);
         int month = 0;
-        if(day < today){
+        if (day < today) {
             month = calendar.get(Calendar.MONTH) + 2;
         } else {
             month = calendar.get(Calendar.MONTH) + 1;
@@ -275,7 +267,6 @@ public class MovieGenerator {
                     "00:00"));
         }
     }
-
 
 
     //Code taken from https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places

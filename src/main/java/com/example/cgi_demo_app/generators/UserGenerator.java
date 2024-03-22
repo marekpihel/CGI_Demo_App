@@ -13,7 +13,6 @@ public class UserGenerator {
     ArrayList<User> users = new ArrayList<>();
 
 
-
     public ArrayList<User> getUsers() throws IOException {
         populateUsersIfThereIsNone();
         return users;
@@ -26,7 +25,7 @@ public class UserGenerator {
         NameGenerator nameGenerator = new NameGenerator();
 
 
-        if(users.isEmpty()) {
+        if (users.isEmpty()) {
             for (int i = 0; i < generateThisAmountOfUsers; i++) {
                 uuid = UUID.randomUUID();
                 ArrayList<Movie> userMovies = new ArrayList<>();

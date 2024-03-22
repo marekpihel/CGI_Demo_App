@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -35,7 +34,7 @@ public class UsersTests {
     List<User> mockUsers = new ArrayList<>();
 
     @Test
-    void testCreateUserGeneratesUser(){
+    void testCreateUserGeneratesUser() {
         User user = User.createUser("Test", "User", UUID.randomUUID(), new ArrayList<>());
 
         assertEquals(User.class, user.getClass());
@@ -67,7 +66,6 @@ public class UsersTests {
 
         assertEquals(userAmount, realUsers.size());
     }
-
 
 
 }

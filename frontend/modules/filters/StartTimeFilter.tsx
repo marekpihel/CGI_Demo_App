@@ -6,9 +6,13 @@ export const startTimeFilter = (
     timeFilter: string,
     setTimeFilter: React.Dispatch<React.SetStateAction<string>>) => {
 
-    const timeFilterChanged  = (e: TimePickerChangeEvent) => {
+    const timeFilterChanged = (e: TimePickerChangeEvent) => {
         const timeValue = e.target.value;
-        setTimeFilter(timeValue);
+        if (timeValue.length == 0) {
+            setTimeFilter("");
+        } else {
+            setTimeFilter(timeValue);
+        }
     };
 
     return (

@@ -13,14 +13,14 @@ public class NameGenerator {
 
     public String generateName() throws IOException {
         String generatedName = "";
-        if( maleNames.isEmpty() && femaleNames.isEmpty() && surNames.isEmpty()){
+        if (maleNames.isEmpty() && femaleNames.isEmpty() && surNames.isEmpty()) {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/Names.txt");
             Scanner scanner = new Scanner(inputStream);
             String line = "";
             int nameListSelector = 0;
-            while(scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
-                if(line==null) break;
+                if (line == null) break;
                 switch (line) {
                     case "$name" -> {
                         nameListSelector = 0;
@@ -36,9 +36,9 @@ public class NameGenerator {
                     }
                 }
 
-                if(nameListSelector == 0){
+                if (nameListSelector == 0) {
                     maleNames.add(line);
-                } else if (nameListSelector == 1){
+                } else if (nameListSelector == 1) {
                     femaleNames.add(line);
                 } else {
                     surNames.add(line);
@@ -51,7 +51,7 @@ public class NameGenerator {
         int selectMaleOrFemaleNames = random.nextInt(2);
 
 
-        if(selectMaleOrFemaleNames == 0){
+        if (selectMaleOrFemaleNames == 0) {
             generatedName += maleNames.get(random.nextInt(maleNames.size()));
         } else {
             generatedName += femaleNames.get(random.nextInt(femaleNames.size()));

@@ -74,7 +74,8 @@ export const gridOfMovies = (
                     <HorizontalLayout style={movieDateRowStyle}>
                         <Button disabled theme="primary contrast" style={movieDateDisplayStyle}>{date}</Button>
                         {movie.sessions?.filter(session => filterSessionUsingTimeFilter(session ?? "", timeFilter ?? "")).map(session =>
-                            <SessionDetail session={session || ""} date={date || ""} movieName={ movie.name|| ""} movieLanguage={movie.language || ""}/>
+                            <SessionDetail session={session || ""} date={date || ""} movieName={movie.name || ""}
+                                           movieLanguage={movie.language || ""}/>
                         )}
                     </HorizontalLayout>
                 ))}
@@ -82,7 +83,12 @@ export const gridOfMovies = (
         </Details>
     }
 
-    const SessionDetail = ({ date, session, movieName, movieLanguage } : {date:string, session:string, movieName:string, movieLanguage:string}) => {
+    const SessionDetail = ({date, session, movieName, movieLanguage}: {
+        date: string,
+        session: string,
+        movieName: string,
+        movieLanguage: string
+    }) => {
         const openDialogueForTickets = () => {
             setSelectedDate(date);
             setSelectedSession(session);
@@ -95,7 +101,7 @@ export const gridOfMovies = (
         let currentDateString = currentDateObject.toLocaleDateString().replace("/", ".").split("/")[0];
         let currentTimeString = currentDateObject.toLocaleTimeString().replace(":", ".").split(":")[0];
 
-        if(date.includes(currentDateString) && parseFloat(session) < parseFloat(currentTimeString)){
+        if (date.includes(currentDateString) && parseFloat(session) < parseFloat(currentTimeString)) {
             return;
         }
         if (!ticketDialogOpened) {
@@ -113,7 +119,7 @@ export const gridOfMovies = (
         </div>);
     };
 
-    const movieRenderer = ({ item: movie }: { item: Movie }) => (
+    const movieRenderer = ({item: movie}: { item: Movie }) => (
         <HorizontalLayout theme="spacing margin">
             <img src={movie.imgLocation}
                  style={movieLogoStyle}

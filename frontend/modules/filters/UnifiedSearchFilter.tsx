@@ -5,8 +5,8 @@ import {Icon} from "@hilla/react-components/Icon";
 
 
 export const unifiedSearchFilter = (
-                           movies: Movie[],
-                           setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>) => {
+    movies: Movie[],
+    setFilteredMovies: React.Dispatch<React.SetStateAction<Movie[]>>) => {
 
 
     return (
@@ -17,7 +17,7 @@ export const unifiedSearchFilter = (
                 const searchTerm = (e.detail.value || '').trim().toLowerCase();
                 setFilteredMovies(
                     movies.filter(
-                        ({genre, name, language, ageLimit,duration}) =>
+                        ({genre, name, language, ageLimit, duration}) =>
                             !searchTerm ||
                             genre?.toLowerCase().includes(searchTerm) ||
                             name?.toLowerCase().includes(searchTerm) ||

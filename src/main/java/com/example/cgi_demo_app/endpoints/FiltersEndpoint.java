@@ -11,12 +11,12 @@ import javax.annotation.Nonnull;
 @AnonymousAllowed
 public class FiltersEndpoint {
     @Nonnull
-    public Language[] getLanguages(){
+    public Language[] getLanguages() {
         return Language.values();
     }
 
     @Nonnull
-    public Genre[] getGenres(){
+    public Genre[] getGenres() {
         return Genre.values();
     }
 }
